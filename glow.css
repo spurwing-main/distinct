@@ -66,11 +66,11 @@
 		transform: scale(1.05) translateY(-44px) rotate(360deg) translateZ(0);
 	}
 }
-
+*/
 .glow:hover {
 	--button-glow-opacity: 0.1;
 	--button-glow-duration: 0.25s;
-}*/
+}
 
 .glow:before {
 	content: "";
