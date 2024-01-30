@@ -84,12 +84,12 @@
 	}
 }
 
-.glow-button:hover {
+.glow:hover {
 	--button-glow-opacity: 1;
 	--button-glow-duration: 0.25s;
 }
 
-.glow-button span:before {
+.glow span:before {
 	content: "";
 	position: absolute;
 	background-color: var(--button-glow, transparent);
