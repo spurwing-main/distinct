@@ -8,26 +8,17 @@
 
 .glow {
 	--button-background: #09041e;
-	--button-color: #fff;
 	--button-shadow: rgba(33, 4, 104, 0.2);
 	--button-shine-left: rgba(120, 0, 245, 0.5);
 	--button-shine-right: rgba(200, 148, 255, 0.65);
-	--button-glow-start: #b000e8;
-	--button-glow-end: #009ffd;
+	--button-glow-start: #fdffd4;
+	--button-glow-end: #e2f4ff;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-
-	outline: none;
-	border: none;
-	position: relative;
-	color: var(--button-color);
-	padding: 0;
-	margin: 0;
 	box-shadow: 0 8px 20px var(--button-shadow);
-	z-index: 1;
 }
-
+/*
 .glow .gradient {
 	position: absolute;
 	inset: 0;
@@ -38,7 +29,7 @@
 	transform: scaleY(1.02) scaleX(1.005) rotate(-0.35deg);
 }
 
-.glow span {
+ .glow span {
 	z-index: 1;
 	position: relative;
 	display: block;
@@ -77,21 +68,23 @@
 }
 
 .glow:hover {
-	--button-glow-opacity: 1;
+	--button-glow-opacity: 0.1;
 	--button-glow-duration: 0.25s;
-}
+}*/
 
 .glow:before {
 	content: "";
 	position: absolute;
 	background-color: var(--button-glow, transparent);
-	width: 32px;
-	height: 32px;
+	width: 25%;
+	height: 200%;
 	border-radius: 50%;
-	left: -16px;
-	top: -16px;
-	transform: translate(var(--pointer-x, 0px), var(--pointer-y)) translateZ(0);
+	left: -12.5%;
+	top: -100%;
+	transform: translate(var(--pointer-x, 0px), var(--pointer-y)) translateZ(0)
+		rotate(45deg);
 	opacity: var(--button-glow-opacity, 0);
 	transition: opacity var(--button-glow-duration, 0.5);
 	filter: blur(20px);
+	z-index: 20;
 }
