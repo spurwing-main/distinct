@@ -7,10 +7,10 @@
 } */
 
 .glow {
-	--button-background: #09041e;
+	/* --button-background: #09041e; */
 	--button-shadow: rgba(33, 4, 104, 0.2);
-	--button-shine-left: rgba(120, 0, 245, 0.5);
-	--button-shine-right: rgba(200, 148, 255, 0.65);
+	/* --button-shine-left: rgba(120, 0, 245, 0.5);
+	--button-shine-right: rgba(200, 148, 255, 0.65); */
 	--button-glow-start: #fdffd4;
 	--button-glow-end: #e2f4ff;
 	-webkit-appearance: none;
