@@ -87,4 +87,5 @@
 	transition: opacity var(--button-glow-duration, 0.5);
 	filter: blur(20px);
 	z-index: 20;
+	pointer-events: none;
 }
