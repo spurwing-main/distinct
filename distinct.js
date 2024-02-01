@@ -11,10 +11,17 @@
 		duration: 0.5,
 	});
 
+	ScrollTrigger.normalizeScroll(true);
+
 	/* basic smooth scroll implementation */
-	ScrollSmoother.create({
-		smooth: 1,
+	// ScrollSmoother.create({
+	// 	smooth: 1,
+	// 	effects: true,
+	// });
+	let smoother = ScrollSmoother.create({
+		smooth: 2,
 		effects: true,
+		normalizeScroll: true,
 	});
 
 	/* Splide */
