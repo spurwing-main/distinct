@@ -239,6 +239,97 @@ function splitText() {
 	setupSplits();
 }
 
+/* flexccordion */
+function flexccordion() {
+	const tl = gsap.timeline();
+	tl.set(".flexccordion_item-body", {
+		height: 0,
+		opacity: 0,
+	});
+	tl.set(".flexccordion_item .card", {
+		opacity: 0,
+	});
+
+	/* show first item */
+	tl.set(".flexccordion_item:nth-child(1) .flexccordion_item-body", {
+		height: "auto",
+		opacity: 1,
+	});
+	tl.set(".flexccordion_item:nth-child(1) .card", {
+		opacity: 1,
+	});
+
+	// Click event listener for flexccordion headers
+	document
+		.querySelectorAll(".flexccordion_item-header")
+		.forEach((header, index) => {
+			header.addEventListener("click", () => {
+				const tl2 = gsap.timeline();
+				// get parent flexccordion
+				const flexccordion = header.closest(".flexccordion");
+				//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
+				let gsap_flexccordion = gsap.utils.selector(flexccordion);
+
+				// Find the parent .flexccordion_item element
+				const item = header.closest(".flexccordion_item");
+
+				// Find the .flexccordion_item-body element within the parent item
+				const body = item.querySelector(".flexccordion_item-body");
+
+				// Find the .card element within the parent item
+				const card = item.querySelector(".card");
+
+				// Close all other items within this flexccordion
+				tl2.to(gsap_flexccordion(".flexccordion_item-body"), {
+					height: 0,
+					opacity: 0,
+					duration: 0.35,
+				});
+				tl2.to(
+					gsap_flexccordion(".card"),
+					{
+						opacity: 0,
+						duration: 0.1,
+					},
+					0.1
+				);
+
+				// Expand clicked item
+				tl2.to(
+					body,
+					{
+						height: "auto",
+						opacity: 1,
+						duration: 0.35,
+					},
+					0.2
+				);
+				tl2.to(
+					card,
+					{
+						opacity: 1,
+						duration: 0.35,
+					},
+					0.3
+				);
+			});
+		});
+
+	// gsap.utils.toArray(".flexccordion").forEach((item, index) => {
+	// 	gsap.from(item, {
+	// 		scrollTrigger: {
+	// 			trigger: item,
+	// 			start: "top center",
+	// 		},
+	// 		x: "-5%",
+	// 		autoAlpha: 0,
+	// 		stagger: 0.15,
+	// 		duration: 0.5,
+	// 		rotation: -22,
+	// 	});
+	// });
+}
+
 function brandScroll() {
 	const brands_loop = verticalLoop(".brands_list-item", {
 		repeat: -1,
@@ -253,20 +344,20 @@ function brandScroll() {
 	// use the helper function to build a seamless looping gsap.timeline() with some special properties/methods
 
 	/*
-  This helper function makes a group of elements animate along the y-axis in a seamless, responsive loop.
-  
-  Features:
-   - Uses yPercent so that even if the widths change (like if the window gets resized), it should still work in most cases.
-   - When each item animates up or down enough, it will loop back to the other side
-   - Optionally pass in a config object with values like draggable: true, center: true, speed (default: 1, which travels at roughly 100 pixels per second), paused (boolean), repeat, reversed, and paddingBottom.
-   - The returned timeline will have the following methods added to it:
-     - next() - animates to the next element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
-     - previous() - animates to the previous element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
-     - toIndex() - pass in a zero-based index value of the element that it should animate to, and optionally pass in a vars object to control duration, easing, etc. Always goes in the shortest direction
-     - current() - returns the current index (if an animation is in-progress, it reflects the final index)
-     - times - an Array of the times on the timeline where each element hits the "starting" spot.
-     - elements - an Array of the elements that are being controlled by the timeline
-   */
+This helper function makes a group of elements animate along the y-axis in a seamless, responsive loop.
+
+Features:
+- Uses yPercent so that even if the widths change (like if the window gets resized), it should still work in most cases.
+- When each item animates up or down enough, it will loop back to the other side
+- Optionally pass in a config object with values like draggable: true, center: true, speed (default: 1, which travels at roughly 100 pixels per second), paused (boolean), repeat, reversed, and paddingBottom.
+- The returned timeline will have the following methods added to it:
+    - next() - animates to the next element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
+    - previous() - animates to the previous element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
+    - toIndex() - pass in a zero-based index value of the element that it should animate to, and optionally pass in a vars object to control duration, easing, etc. Always goes in the shortest direction
+    - current() - returns the current index (if an animation is in-progress, it reflects the final index)
+    - times - an Array of the times on the timeline where each element hits the "starting" spot.
+    - elements - an Array of the elements that are being controlled by the timeline
+*/
 	function verticalLoop(items, config) {
 		items = gsap.utils.toArray(items);
 		config = config || {};
@@ -523,6 +614,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			stickyHomeHero();
 			splitText();
 			brandScroll();
+			flexccordion();
 		});
 	};
 });
