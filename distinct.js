@@ -129,10 +129,12 @@ function mount_splide_home_hero(myClass) {
 	let splides = document.querySelectorAll(myClass);
 	for (let i = 0; i < splides.length; i++) {
 		let splide = new Splide(splides[i], {
-			type: "fade",
+			type: "loop",
 			rewind: true,
 			pauseOnHover: false,
 			pauseOnFocus: false,
+			gap: "0rem",
+			autoplay: true,
 		});
 
 		var toggleButton = document.querySelector(".splide-button");
