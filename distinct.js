@@ -19,7 +19,7 @@
 	// 	effects: true,
 	// });
 	let smoother = ScrollSmoother.create({
-		smooth: 2,
+		smooth: 1,
 		effects: true,
 		normalizeScroll: true,
 	});
