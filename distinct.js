@@ -5,6 +5,7 @@
 	gsap.registerPlugin(SplitText);
 	gsap.registerPlugin(Draggable);
 	gsap.registerPlugin(InertiaPlugin);
+	gsap.registerPlugin(Flip);
 
 	gsap.defaults({
 		ease: "power2.out",
@@ -273,7 +274,7 @@ function flexccordion() {
 		.querySelectorAll(".flexccordion_item-header")
 		.forEach((header, index) => {
 			header.addEventListener("click", () => {
-				const tl2 = gsap.timeline();
+				const tl_item = gsap.timeline();
 				// get parent flexccordion
 				const flexccordion = header.closest(".flexccordion");
 				//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
@@ -289,12 +290,12 @@ function flexccordion() {
 				const card = item.querySelector(".card");
 
 				// Close all other items within this flexccordion
-				tl2.to(gsap_flexccordion(".flexccordion_item-body"), {
+				tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
 					height: 0,
 					opacity: 0,
 					duration: 0.35,
 				});
-				tl2.to(
+				tl_item.to(
 					gsap_flexccordion(".card"),
 					{
 						opacity: 0,
@@ -304,7 +305,7 @@ function flexccordion() {
 				);
 
 				// Expand clicked item
-				tl2.to(
+				tl_item.to(
 					body,
 					{
 						height: "auto",
@@ -313,7 +314,7 @@ function flexccordion() {
 					},
 					0.2
 				);
-				tl2.to(
+				tl_item.to(
 					card,
 					{
 						opacity: 1,
@@ -323,20 +324,109 @@ function flexccordion() {
 				);
 			});
 		});
+}
 
-	// gsap.utils.toArray(".flexccordion").forEach((item, index) => {
-	// 	gsap.from(item, {
-	// 		scrollTrigger: {
-	// 			trigger: item,
-	// 			start: "top center",
-	// 		},
-	// 		x: "-5%",
-	// 		autoAlpha: 0,
-	// 		stagger: 0.15,
-	// 		duration: 0.5,
-	// 		rotation: -22,
-	// 	});
-	// });
+function featuresTab() {
+	/* set initial states */
+	(function features_set() {
+		const tl = gsap.timeline();
+		/* hide all images and text */
+		tl.set(".feature_body, .feature_img", {
+			opacity: 0,
+		});
+		/* set all titles opacity */
+		tl.set(".feature-title", {
+			opacity: 0.5,
+		});
+
+		/* make first item active */
+		tl.set(
+			".features_item:nth-child(1) :is(.feature_bod, .feature_img, .feature-title",
+			{
+				opacity: 1,
+			}
+		);
+	})();
+
+	// event listener for feature titles
+	document.querySelectorAll(".feature-title").forEach((title, index) => {
+		// timeline for each item
+		const tl_item = gsap.timeline({ paused: true });
+
+		title.addEventListener("mouseover", () => {
+			feature_mouseOver();
+		});
+
+		function feature_mouseOver() {
+			// get parent features component
+			const features = title.closest(".features");
+			let gsap_features = gsap.utils.selector(features);
+
+			// Find the parent .features_item element
+			const item = title.closest(".features_item");
+			let gsap_item = gsap.utils.selector(item);
+
+			// Find the .feature_body element within the parent item
+			const body = item.querySelector(".feature_body");
+
+			// Find the img within the parent item
+			const img = item.querySelector(".feature_img");
+
+			// make other items inactive
+			tl_item.to(
+				gsap_features(".feature_body"),
+				{
+					opacity: 0,
+					duration: 0.35,
+				},
+				0
+			);
+			tl_item.to(
+				gsap_features(".feature_img"),
+				{
+					opacity: 0,
+					duration: 0.75,
+				},
+				0
+			);
+			tl_item.to(
+				gsap_features(".feature-title"),
+				{
+					opacity: 0.5,
+					duration: 0.15,
+				},
+				0
+			);
+
+			// animate title
+			tl_item.to(
+				title,
+				{
+					opacity: 1,
+					duration: 0.85,
+				},
+				0.05
+			);
+
+			// Expand clicked item
+			tl_item.to(
+				body,
+				{
+					opacity: 1,
+					duration: 0.3,
+				},
+				0.2
+			);
+			tl_item.to(
+				img,
+				{
+					opacity: 1,
+					duration: 0.85,
+				},
+				0.05
+			);
+		}
+	});
 }
 
 function brandScroll() {
@@ -612,6 +702,316 @@ Features:
 	}
 }
 
+function collabs() {
+	// TO DO - update to support multiple instances of this component on a page
+	const collabsItems = gsap.utils.toArray(".collabs_item");
+	const collabsList = document.querySelector(".collabs_list");
+	const collabsListWrap = gsap.utils.toArray(".collabs_list-wrap");
+
+	// get the items we want expanded when the list is split up (ie some aligned to left and some to right)
+	const collabsItems_split = gsap.utils.toArray(
+		".collabs_item:is(:nth-child(6n+1), :nth-child(6n+5))"
+	);
+	// get the items we want expanded when the list is neat (ie all aligned to the left)
+	const collabsItems_neat = gsap.utils.toArray(".collabs_item:nth-child(3n+3)");
+
+	function changeLayout() {
+		// make all these items auto sized
+		collabsItems_split.forEach((item) => {
+			item.style.flexBasis = "auto";
+			item.style.flexGrow = "0";
+		});
+		// make these items grow
+		collabsItems_neat.forEach((item) => {
+			item.style.flexBasis = "calc(50% - (2 * var(--collabs-gap)))";
+			item.style.flexGrow = "1";
+		});
+	}
+
+	function doFlip() {
+		// get initial states of the list and all items (we need to record all of their initial posns and sizes because we're using position: absolute to animate)
+		const state = Flip.getState(collabsItems, collabsList);
+
+		// get initial height of list as some issues with this collapsing during animation
+		const startingHeight = gsap.getProperty(collabsList, "height");
+
+		// do the style change
+		changeLayout();
+
+		// get height after style change
+		const newHeight = gsap.getProperty(collabsList, "height");
+
+		// set height back to original height
+		gsap.set(collabsList, { height: startingHeight });
+
+		Flip.from(state, {
+			absolute: true, // uses position: absolute during the flip to work around flexbox challenges
+			duration: 1,
+			stagger: 0.025, // slight stagger
+		});
+	}
+
+	ScrollTrigger.create({
+		trigger: ".collabs",
+		start: "top center",
+		onEnter: () => {
+			doFlip();
+		},
+	});
+}
+
+/* testimonials */
+
+/*
+
+on load:
+- get all case study items x
+- set all img opacity 0
+- set all body opacity 0
+- set all caption opacity 0
+- get first item 
+	- set img, body, caption visible, 
+	- set item to active
+
+- get arrow elements
+- get progress slider
+- set slide index = 0
+
+on arrow click
+- change slide index
+- set current active item inactive
+- set next item active
+- update progress bar
+
+
+*/
+
+function slider_caseStudies() {
+	const caseStudies = {
+		// tl: gsap.timeline(),
+		component: document.querySelector(".case-studies"), // get the parent component element
+		slides: [],
+		currentSlideIndex: 0,
+		nextSlideIndex: 0,
+		previousSlideIndex: 0,
+		nextButton: this.component
+			? this.component.querySelector(".splide__arrow--next")
+			: null, // get next btn
+		previousButton: this.component
+			? this.component.querySelector(".splide__arrow--prev")
+			: null, // get prev btn
+		loop: true,
+		progressElement: this.component
+			? this.component.querySelector(".slider-progress_bar")
+			: null, // get the progress bar within this component
+	};
+
+	(function getSlides() {
+		const slideElements = caseStudies.component.querySelectorAll(".case-study"); // get all slides
+
+		slideElements.forEach((slideElement, index) => {
+			const slideObj = {
+				slide: slideElement,
+				isActive: false,
+				image: slideElement.querySelector(".case-study_img-wrap"), // get slide image
+				body: slideElement.querySelector(".case-study_body"), // get slide body
+				caption: slideElement.querySelector(".case-study_caption"), // get slide caption
+			};
+
+			if (index === 0) {
+				slideObj.isActive = true; // Set first slide as active
+			} else {
+				slideObj.image.style.opacity = 0;
+				slideObj.body.style.opacity = 0;
+				slideObj.caption.style.opacity = 0;
+			}
+
+			caseStudies.slides.push(slideObj); //add slides to caseStudies obj
+		});
+	})();
+
+	(function openFirstSlide() {
+		// if at least one slide, set first slide active
+		if (caseStudies.slides.length != 0) {
+			caseStudies.currentSlideIndex = 0;
+			caseStudies.slides[0].isActive = true;
+			updateIndexes(); // get prev and next indexes and pass to cS obj
+			updateProgress(); // update progress bar
+		}
+	});
+
+	// update progress bar
+	function updateProgress() {
+		const percent =
+			(caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) * 100;
+		if (caseStudies.progressElement) {
+			gsap.to(caseStudies.progressElement, {
+				width: `${percent}%`,
+				duration: 0.5,
+			});
+		}
+	}
+
+	// get next and previous slides
+	function getPreviousAndNextIndexes(totalSlides, currentIndex, shouldLoop) {
+		if (currentIndex < 0 || currentIndex >= totalSlides) {
+			throw new Error("Current slide index is out of range");
+		}
+
+		let previousIndex = currentIndex - 1;
+		let nextIndex = currentIndex + 1;
+
+		if (shouldLoop) {
+			previousIndex = (previousIndex + totalSlides) % totalSlides;
+			nextIndex = nextIndex % totalSlides;
+		} else {
+			previousIndex = Math.max(previousIndex, 0);
+			nextIndex = Math.min(nextIndex, totalSlides - 1);
+		}
+
+		return {
+			previousIndex: previousIndex,
+			nextIndex: nextIndex,
+		};
+	}
+
+	// update indexes
+	function updateIndexes() {
+		const indexes = getPreviousAndNextIndexes(
+			caseStudies.slides.length,
+			caseStudies.currentSlideIndex,
+			caseStudies.loop
+		);
+		caseStudies.previousSlideIndex = indexes.previousIndex;
+		caseStudies.nextSlideIndex = indexes.nextIndex;
+	}
+
+	// on next click
+	caseStudies.nextButton.addEventListener("click", () => {
+		openSlide(caseStudies.nextSlideIndex);
+	});
+
+	// on prev click
+	caseStudies.previousButton.addEventListener("click", () => {
+		openSlide(caseStudies.previousSlideIndex);
+	});
+
+	function openSlide(newIndex) {
+		var oldIndex = caseStudies.currentSlideIndex;
+
+		// set new slide to active
+		caseStudies.currentSlideIndex = newIndex;
+		caseStudies.slides[oldIndex].isActive = false;
+		caseStudies.slides[newIndex].isActive = true;
+
+		//update cS indexes
+		updateIndexes();
+	}
+
+	// Click event listener for flexccordion headers
+	document
+		.querySelectorAll(".flexccordion_item-header")
+		.forEach((header, index) => {
+			header.addEventListener("click", () => {
+				const tl_item = gsap.timeline();
+				// get parent flexccordion
+				const flexccordion = header.closest(".flexccordion");
+				//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
+				let gsap_flexccordion = gsap.utils.selector(flexccordion);
+
+				// Find the parent .flexccordion_item element
+				const item = header.closest(".flexccordion_item");
+
+				// Find the .flexccordion_item-body element within the parent item
+				const body = item.querySelector(".flexccordion_item-body");
+
+				// Find the .card element within the parent item
+				const card = item.querySelector(".card");
+
+				// Close all other items within this flexccordion
+				tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
+					height: 0,
+					opacity: 0,
+					duration: 0.35,
+				});
+				tl_item.to(
+					gsap_flexccordion(".card"),
+					{
+						opacity: 0,
+						duration: 0.1,
+					},
+					0.1
+				);
+
+				// Expand clicked item
+				tl_item.to(
+					body,
+					{
+						height: "auto",
+						opacity: 1,
+						duration: 0.35,
+					},
+					0.2
+				);
+				tl_item.to(
+					card,
+					{
+						opacity: 1,
+						duration: 0.35,
+					},
+					0.3
+				);
+			});
+		});
+}
+
+function accordion() {
+	let panels = gsap.utils.toArray(".accordion-panel");
+	let headers = gsap.utils.toArray(".accordion_header");
+	let animations = panels.map(createAnimation); //create an animation function for every panel
+
+	headers.forEach((header) => {
+		header.addEventListener("click", () => playAnim(header));
+	});
+
+	function playAnim(selectedHeader) {
+		animations.forEach((animation) => animation(selectedHeader));
+	}
+
+	function createAnimation(element) {
+		let header = element.querySelector(".accordion_header");
+		let body = element.querySelector(".accordion_body-wrap");
+		let icon = element.querySelector(".accordion_icon");
+		let iconInner = element.querySelector(".accordion_icon-inner");
+
+		gsap.set(body, { height: "auto" });
+		gsap.set(icon, { opacity: 1 });
+		gsap.set(iconInner, {
+			rotationZ: 45,
+			transformOrigin: "50% 50%",
+		});
+
+		let animation = gsap
+			.timeline()
+			.from(body, {
+				height: 0,
+				duration: 0.75,
+				ease: "power1.inOut",
+			})
+			.from(icon, { duration: 0.2, opacity: 0.4, ease: "none" }, 0)
+			.from(iconInner, { duration: 0.2, rotationZ: 0, ease: "none" }, 0)
+			.reverse();
+
+		return function (selected) {
+			if (selected === header) {
+				animation.reversed(!animation.reversed());
+			} else {
+				animation.reverse();
+			}
+		};
+	}
+}
+
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets
@@ -622,8 +1022,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			// GSAP custom code goes here
 			stickyHomeHero();
 			splitText();
-			brandScroll();
+			try {
+				brandScroll();
+			} catch (err) {
+				console.log("no brand scroll");
+			}
 			flexccordion();
+			featuresTab();
+			collabs();
+			accordion();
 		});
 	};
 });

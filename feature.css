@@ -1,0 +1,33 @@
+/* temporary attempt to replace features tab animations with CSS only - unfortunately doesn't easily handle initially making the first element active and then hovering over another element, withot using :has() and some very long selectors */
+
+/* only show one overlay */
+.features .features_item:not(:first-of-type) .feature_overlay {
+	display: none;
+}
+
+/* set all but the first item to inactive */
+.features .features_item:not(:first-of-type) .feature-title {
+	opacity: 0.5;
+}
+.features .features_item:not(:first-of-type) .feature_img {
+	opacity: 0;
+}
+.features .features_item:not(:first-of-type) .feature_body {
+	opacity: 0;
+}
+
+/* on hover, show elements */
+.feature_header:hover .feature-title {
+	opacity: 1 !important;
+	transition: opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s;
+}
+
+.feature_header:hover ~ .feature_bg .feature_img {
+	opacity: 1 !important;
+	transition: opacity 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s;
+}
+
+.feature_header:hover ~ .feature_footer .feature_body {
+	opacity: 1 !important;
+	transition: opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s;
+}
