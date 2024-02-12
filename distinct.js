@@ -351,7 +351,7 @@ function featuresTab() {
 	// event listener for feature titles
 	document.querySelectorAll(".feature-title").forEach((title, index) => {
 		// timeline for each item
-		const tl_item = gsap.timeline({ paused: true });
+		const tl_item = gsap.timeline({ paused: false });
 
 		title.addEventListener("mouseover", () => {
 			feature_mouseOver();
@@ -398,7 +398,7 @@ function featuresTab() {
 				0
 			);
 
-			// animate title
+			// show item
 			tl_item.to(
 				title,
 				{
@@ -407,8 +407,6 @@ function featuresTab() {
 				},
 				0.05
 			);
-
-			// Expand clicked item
 			tl_item.to(
 				body,
 				{
@@ -426,6 +424,36 @@ function featuresTab() {
 				0.05
 			);
 		}
+	});
+}
+
+function navHover() {
+	// Get all subnav elements
+	const subnavs = document.querySelectorAll(".subnav");
+
+	// Loop through each subnav
+	subnavs.forEach((subnav) => {
+		// Get subnav links and images within the current subnav
+		const subnavLinks = subnav.querySelectorAll(".subnav_link");
+		const subnavImages = subnav.querySelectorAll(".subnav_img");
+
+		// Hide all images except the first one
+		gsap.set(subnavImages, { opacity: 0, display: "none" });
+		gsap.set(subnavImages[0], { opacity: 1, display: "block" });
+
+		// Add event listeners to each subnav link
+		subnavLinks.forEach((link, index) => {
+			link.addEventListener("mouseenter", () => {
+				// Hide all images
+				gsap.to(subnavImages, { opacity: 0, display: "none", duration: 0.3 });
+				// Show the corresponding image
+				gsap.to(subnavImages[index], {
+					opacity: 1,
+					display: "block",
+					duration: 0.3,
+				});
+			});
+		});
 	});
 }
 
@@ -794,16 +822,12 @@ function slider_caseStudies() {
 		currentSlideIndex: 0,
 		nextSlideIndex: 0,
 		previousSlideIndex: 0,
-		nextButton: this.component
-			? this.component.querySelector(".splide__arrow--next")
-			: null, // get next btn
-		previousButton: this.component
-			? this.component.querySelector(".splide__arrow--prev")
-			: null, // get prev btn
+		nextButton: document.querySelector(".splide__arrow--next#case-study-next"),
+		previousButton: document.querySelector(
+			".splide__arrow--prev#case-study-prev"
+		),
 		loop: true,
-		progressElement: this.component
-			? this.component.querySelector(".slider-progress_bar")
-			: null, // get the progress bar within this component
+		progressElement: document.querySelector(".slider-progress_bar#case-study"),
 	};
 
 	(function getSlides() {
@@ -815,7 +839,7 @@ function slider_caseStudies() {
 				isActive: false,
 				image: slideElement.querySelector(".case-study_img-wrap"), // get slide image
 				body: slideElement.querySelector(".case-study_body"), // get slide body
-				caption: slideElement.querySelector(".case-study_caption"), // get slide caption
+				caption: slideElement.querySelector(".testimonial_caption"), // get slide caption
 			};
 
 			if (index === 0) {
@@ -838,12 +862,13 @@ function slider_caseStudies() {
 			updateIndexes(); // get prev and next indexes and pass to cS obj
 			updateProgress(); // update progress bar
 		}
-	});
+	})();
 
 	// update progress bar
 	function updateProgress() {
 		const percent =
 			(caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) * 100;
+		console.log(percent);
 		if (caseStudies.progressElement) {
 			gsap.to(caseStudies.progressElement, {
 				width: `${percent}%`,
@@ -906,63 +931,35 @@ function slider_caseStudies() {
 
 		//update cS indexes
 		updateIndexes();
+
+		console.log(caseStudies.currentSlideIndex);
+
+		const tl_slide = gsap.timeline();
+		const gsap_component = gsap.utils.selector(caseStudies.component);
+		const gsap_slide = gsap.utils.selector(
+			caseStudies.slides[caseStudies.currentSlideIndex].slide
+		);
+		tl_slide.to(
+			gsap_component(
+				".case-study_img-wrap, .case-study_body, .testimonial_caption"
+			),
+			{
+				opacity: 0,
+				duration: 0.35,
+			}
+		);
+		tl_slide.to(
+			gsap_slide(
+				".case-study_img-wrap, .case-study_body, .testimonial_caption"
+			),
+			{
+				opacity: 1,
+				duration: 0.35,
+			}
+		);
+
+		updateProgress();
 	}
-
-	// Click event listener for flexccordion headers
-	document
-		.querySelectorAll(".flexccordion_item-header")
-		.forEach((header, index) => {
-			header.addEventListener("click", () => {
-				const tl_item = gsap.timeline();
-				// get parent flexccordion
-				const flexccordion = header.closest(".flexccordion");
-				//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
-				let gsap_flexccordion = gsap.utils.selector(flexccordion);
-
-				// Find the parent .flexccordion_item element
-				const item = header.closest(".flexccordion_item");
-
-				// Find the .flexccordion_item-body element within the parent item
-				const body = item.querySelector(".flexccordion_item-body");
-
-				// Find the .card element within the parent item
-				const card = item.querySelector(".card");
-
-				// Close all other items within this flexccordion
-				tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
-					height: 0,
-					opacity: 0,
-					duration: 0.35,
-				});
-				tl_item.to(
-					gsap_flexccordion(".card"),
-					{
-						opacity: 0,
-						duration: 0.1,
-					},
-					0.1
-				);
-
-				// Expand clicked item
-				tl_item.to(
-					body,
-					{
-						height: "auto",
-						opacity: 1,
-						duration: 0.35,
-					},
-					0.2
-				);
-				tl_item.to(
-					card,
-					{
-						opacity: 1,
-						duration: 0.35,
-					},
-					0.3
-				);
-			});
-		});
 }
 
 function accordion() {
@@ -1031,6 +1028,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			featuresTab();
 			collabs();
 			accordion();
+			navHover();
+			slider_caseStudies();
 		});
 	};
 });
