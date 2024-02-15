@@ -92,7 +92,49 @@ function mount_splide_home_services(myClass) {
 		splide.mount();
 	}
 }
-mount_splide_home_services(".splide.is-home-services");
+try {
+	mount_splide_home_services(".splide.is-home-services");
+} catch (err) {
+	console.log("no home services");
+}
+/* sustainability approach */
+function mount_splide_sustainability_approach(myClass) {
+	let splides = document.querySelectorAll(myClass);
+	for (let i = 0; i < splides.length; i++) {
+		let splide = new Splide(splides[i], {
+			perMove: 1,
+			gap: "1rem",
+			focus: 0,
+			speed: 600,
+			dragAngleThreshold: 60,
+			perPage: 3,
+			rewindSpeed: 400,
+			waitForTransition: false,
+			updateOnMove: true,
+			trimSpace: "move",
+			type: "loop",
+			drag: true,
+			snap: true,
+			autoplay: false,
+			arrows: true,
+			breakpoints: {
+				767: { perPage: 1 },
+				991: { perPage: 2 },
+			},
+		});
+
+		splide_progress(splide); /* add progress bar */
+		splide.on("mounted", function () {
+			Webflow.require("ix2").init();
+		});
+		splide.mount();
+	}
+}
+try {
+	mount_splide_sustainability_approach(".splide.is-sustainability-approach");
+} catch (err) {
+	console.log("no sustainability approach");
+}
 
 /* homepage testimonials */
 function mount_splide_home_testimonials(myClass) {
@@ -123,7 +165,39 @@ function mount_splide_home_testimonials(myClass) {
 		splide.mount();
 	}
 }
-mount_splide_home_testimonials(".splide.is-home-testimonials");
+try {
+	mount_splide_home_testimonials(".splide.is-home-testimonials");
+} catch (err) {
+	console.log("no home testimonials");
+}
+
+/* ethos slider */
+function mount_splide_about_ethos(myClass) {
+	let splides = document.querySelectorAll(myClass);
+	for (let i = 0; i < splides.length; i++) {
+		let splide = new Splide(splides[i], {
+			gap: "1rem",
+			perPage: 1,
+			type: "slide",
+			autoplay: false,
+			arrows: true,
+			mediaQuery:
+				"min" /* mobile first - so slider is destroyed for 768 and above */,
+			breakpoints: {
+				768: {
+					destroy: true,
+				},
+			},
+		});
+
+		splide.mount();
+	}
+}
+try {
+	mount_splide_about_ethos(".splide.is-ethos");
+} catch (err) {
+	console.log("no ethos");
+}
 
 /* hero slider on homepage */
 function mount_splide_home_hero(myClass) {
@@ -143,7 +217,7 @@ function mount_splide_home_hero(myClass) {
 		var buttonPlay = toggleButton.querySelector(".splide-button_play");
 
 		/* get all videos within slider */
-		var videosContainer = document.querySelector(".home-hero");
+		var videosContainer = document.querySelector(".hero");
 		var videos = videosContainer.querySelectorAll("video");
 		/* get progress bar */
 		var progressBar = document.querySelector(".splide-button_progress-circle");
@@ -197,7 +271,11 @@ function mount_splide_home_hero(myClass) {
 		splide.mount();
 	}
 }
-mount_splide_home_hero(".splide.is-home-hero");
+try {
+	mount_splide_home_hero(".splide.is-home-hero");
+} catch (err) {
+	console.log("no home hero");
+}
 
 /* sticky home hero */
 function stickyHomeHero() {
@@ -252,22 +330,23 @@ function splitText() {
 /* flexccordion */
 function flexccordion() {
 	const tl = gsap.timeline();
-	tl.set(".flexccordion_item-body", {
+
+	/* set initial states */
+	tl.set(".flexccordion_item:not(:nth-child(1)) .flexccordion_item-body", {
 		height: 0,
 		opacity: 0,
 	});
-	tl.set(".flexccordion_item .card", {
+	tl.set(".flexccordion_item:not(:nth-child(1)) .card", {
 		opacity: 0,
 	});
-
-	/* show first item */
-	tl.set(".flexccordion_item:nth-child(1) .flexccordion_item-body", {
-		height: "auto",
-		opacity: 1,
-	});
-	tl.set(".flexccordion_item:nth-child(1) .card", {
-		opacity: 1,
-	});
+	tl.set(
+		[
+			".flexccordion_item:not(:nth-child(1)) :is(.flexccordion-bar, .flexccordion-bar_short)",
+		],
+		{
+			height: 0,
+		}
+	);
 
 	// Click event listener for flexccordion headers
 	document
@@ -289,6 +368,10 @@ function flexccordion() {
 				// Find the .card element within the parent item
 				const card = item.querySelector(".card");
 
+				// get bar
+				const bar = item.querySelector(".flexccordion-bar");
+				const bar_short = item.querySelector(".flexccordion-bar_short");
+
 				// Close all other items within this flexccordion
 				tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
 					height: 0,
@@ -303,13 +386,21 @@ function flexccordion() {
 					},
 					0.1
 				);
-
-				// Expand clicked item
 				tl_item.to(
+					gsap_flexccordion([".flexccordion-bar", ".flexccordion-bar_short"]),
+					{
+						height: 0,
+					},
+					0
+				);
+				gsap.set(body, { height: "auto", opacity: 1 }); // temporarily set the body to height auto so we can capture the required height of the bar
+				const item_height = item.offsetHeight;
+				// Expand clicked item
+				tl_item.from(
 					body,
 					{
-						height: "auto",
-						opacity: 1,
+						height: "0",
+						opacity: 0,
 						duration: 0.35,
 					},
 					0.2
@@ -321,6 +412,22 @@ function flexccordion() {
 						duration: 0.35,
 					},
 					0.3
+				);
+				tl_item.to(
+					bar,
+					{
+						height: item_height,
+						duration: 0.35,
+					},
+					0.2
+				);
+				tl_item.to(
+					bar_short,
+					{
+						height: 25,
+						duration: 0.35,
+					},
+					0.2
 				);
 			});
 		});
@@ -731,7 +838,6 @@ Features:
 }
 
 function collabs() {
-	// TO DO - update to support multiple instances of this component on a page
 	const collabsItems = gsap.utils.toArray(".collabs_item");
 	const collabsList = document.querySelector(".collabs_list");
 	const collabsListWrap = gsap.utils.toArray(".collabs_list-wrap");
@@ -816,7 +922,6 @@ on arrow click
 
 function slider_caseStudies() {
 	const caseStudies = {
-		// tl: gsap.timeline(),
 		component: document.querySelector(".case-studies"), // get the parent component element
 		slides: [],
 		currentSlideIndex: 0,
@@ -1029,7 +1134,62 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			collabs();
 			accordion();
 			navHover();
-			slider_caseStudies();
+			try {
+				slider_caseStudies();
+			} catch (err) {
+				console.log("no case studies slider");
+			}
+
+			const sliders = gsap.utils.toArray(".split-slider_list");
+			sliders.forEach((slider, index) => {
+				const slides = gsap.utils.toArray(
+					".split-slider_item",
+					slider
+				); /* return descendent elements */
+
+				let currentSlide = slides[0];
+
+				/* make split-slider appropriate height for scrolling */
+				const slider_height = slides.length * 100 + "vh";
+				gsap.set(slider, { height: slider_height });
+
+				/* for each slide */
+				slides.forEach((slide, index) => {
+					// 	/* get internal content */
+					const img = slide.querySelector(".split-slider_img-wrap");
+					const text = slide.querySelector(".split-slider_footer");
+					// 	/* for all but first slide, hide content */
+					if (index > 0) {
+						gsap.set(slide, { opacity: 0 });
+					}
+					gsap.to(slide, {
+						/* create scroll trigger for each slide */
+						scrollTrigger: {
+							trigger: slide,
+							// start: () => (index - 0.5) * innerHeight,
+							start: "top top",
+							end: "+=500",
+							// end: () => innerHeight,
+							pin: true,
+							pinSpacing: false, // Keeps pinned element at the top of the viewport
+							// endTrigger: '.split-slider_item:last-child',
+							// end: "bottom 150px",
+							scrub: true, // Smoothly animate the pinning
+							markers: true,
+							onToggle: (self) => self.isActive && setSlide(slide),
+						},
+						opacity: 1,
+					});
+				});
+
+				function setSlide(newSlide) {
+					if (newSlide !== currentSlide) {
+						gsap.to(currentSlide, { autoAlpha: 0 });
+						gsap.to(newSlide, { autoAlpha: 1 });
+						currentSlide = newSlide;
+					}
+				}
+			});
 		});
 	};
 });
