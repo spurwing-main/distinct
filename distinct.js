@@ -1,3 +1,6 @@
+// Create a global object to store component data
+const distinct = {};
+
 (function setUp() {
 	/* GSAP */
 	gsap.registerPlugin(ScrollTrigger);
@@ -12,18 +15,18 @@
 		duration: 0.5,
 	});
 
-	ScrollTrigger.normalizeScroll(true);
+	// ScrollTrigger.normalizeScroll(true);
 
 	/* basic smooth scroll implementation */
 	// ScrollSmoother.create({
 	// 	smooth: 1,
 	// 	effects: true,
 	// });
-	let smoother = ScrollSmoother.create({
-		smooth: 1,
-		effects: true,
-		normalizeScroll: true,
-	});
+	// let smoother = ScrollSmoother.create({
+	// 	smooth: 1,
+	// 	effects: true,
+	// 	normalizeScroll: true,
+	// });
 
 	/* Splide */
 	Splide.defaults = {
@@ -838,62 +841,120 @@ Features:
 }
 
 function collabs() {
-	const collabsItems = gsap.utils.toArray(".collabs_item");
-	const collabsList = document.querySelector(".collabs_list");
-	const collabsListWrap = gsap.utils.toArray(".collabs_list-wrap");
+	// collaboration logo grids on service etc pages
 
-	// get the items we want expanded when the list is split up (ie some aligned to left and some to right)
-	const collabsItems_split = gsap.utils.toArray(
-		".collabs_item:is(:nth-child(6n+1), :nth-child(6n+5))"
-	);
-	// get the items we want expanded when the list is neat (ie all aligned to the left)
-	const collabsItems_neat = gsap.utils.toArray(".collabs_item:nth-child(3n+3)");
+	(function loadCollabs() {
+		// get all collabs instances on page, their child rows and logos, as well as gsap scope functions for each
+		let collabs = {
+			instances: [],
+		};
 
-	function changeLayout() {
-		// make all these items auto sized
-		collabsItems_split.forEach((item) => {
-			item.style.flexBasis = "auto";
-			item.style.flexGrow = "0";
+		const instances = gsap.utils.toArray(".collabs");
+
+		instances.forEach((instance) => {
+			const componentInfo = {
+				rows: [],
+				element: instance,
+				gsapScope: gsap.utils.selector(instance),
+			};
+
+			const collabsRows = componentInfo.gsapScope(".collabs_list");
+
+			const rows = collabsRows.map((row) => ({
+				element: row,
+				gsapScope: gsap.utils.selector(row),
+				logos: gsap.utils.toArray(row.querySelectorAll(".collabs_item")),
+			}));
+
+			componentInfo.rows = rows;
+			collabs.instances.push(componentInfo);
 		});
-		// make these items grow
-		collabsItems_neat.forEach((item) => {
-			item.style.flexBasis = "calc(50% - (2 * var(--collabs-gap)))";
-			item.style.flexGrow = "1";
-		});
+
+		distinct.collabs = collabs;
+	})();
+
+	// stop if no instances of component
+	if (distinct.collabs.instances.length == 0) {
+		console.log("no collabs found");
+		return;
 	}
 
-	function doFlip() {
-		// get initial states of the list and all items (we need to record all of their initial posns and sizes because we're using position: absolute to animate)
-		const state = Flip.getState(collabsItems, collabsList);
+	(function getLogosToChange() {
+		distinct.collabs.instances.forEach((instance) => {
+			// get the logos that should start 'wide' - ie with a large flex-basis. This creates the gap
+			// 1st row we want 1st logo, 2nd row we want 2nd, 3rd row 3rd (and then we loop back to 1st logo if we have 4+ rows).
+			instance.wide_start = instance.gsapScope([
+				".collabs_list-wrap:nth-child(3n+1) .collabs_item:nth-child(3n+1)",
+				".collabs_list-wrap:nth-child(3n+2) .collabs_item:nth-child(3n+2)",
+				".collabs_list-wrap:nth-child(3n+3) .collabs_item:nth-child(3n+3)",
+			]);
+			// get the logos that should be wide at the end of the animation - this is the last logo in each row.
+			instance.wide_end = instance.gsapScope(".collabs_item:nth-child(3)");
 
-		// get initial height of list as some issues with this collapsing during animation
-		const startingHeight = gsap.getProperty(collabsList, "height");
+			instance.wide_start.forEach((item) => {
+				growLogo(item);
+			});
+		});
+	})();
+
+	function growLogo(item) {
+		item.style.flexBasis = "calc(50% - (2 * var(--collabs-gap)))";
+		item.style.flexGrow = "1";
+	}
+
+	function shrinkLogo(item) {
+		item.style.flexBasis = "auto";
+		item.style.flexGrow = "0";
+	}
+
+	function doFlip(instance) {
+		// do the animation
+		instance.rows.forEach((row) => {
+			// for each row, store the initial states of the row and all child logos, and the rows starting height
+			// row.logos = row.gsapScope(".collabs_item");
+			row.state = Flip.getState(row.logos, row.element);
+			row.startingHeight = gsap.getProperty(row.element, "height");
+			console.log(row.startingHeight);
+			// gsap.set(row, { height: row.startingHeight });
+		});
 
 		// do the style change
-		changeLayout();
+		function changeLayout(instance) {
+			// make all these items auto sized
+			instance.wide_start.forEach((item) => {
+				shrinkLogo(item);
+			});
+			// make these items grow
+			instance.wide_end.forEach((item) => {
+				growLogo(item);
+			});
+		}
+		changeLayout(instance);
 
-		// get height after style change
-		const newHeight = gsap.getProperty(collabsList, "height");
-
-		// set height back to original height
-		gsap.set(collabsList, { height: startingHeight });
-
-		Flip.from(state, {
-			absolute: true, // uses position: absolute during the flip to work around flexbox challenges
-			duration: 1,
-			stagger: 0.025, // slight stagger
+		instance.rows.forEach((row) => {
+			// get height after style change
+			row.newHeight = gsap.getProperty(row, "height");
+			// set height back to original height
+			gsap.set(row.element, { height: row.startingHeight });
+			Flip.from(row.state, {
+				absolute: true, // uses position: absolute during the flip to work around flexbox challenges
+				duration: 1,
+				stagger: 0.025, // slight stagger
+			});
 		});
 	}
 
-	ScrollTrigger.create({
-		trigger: ".collabs",
-		start: "top center",
-		onEnter: () => {
-			doFlip();
-		},
+	distinct.collabs.instances.forEach((instance) => {
+		// create a scroll trigger for each instance
+		ScrollTrigger.create({
+			trigger: instance.element, // the trigger is the parent component
+			start: "top center",
+			onEnter: () => {
+				doFlip(instance); // do animation for this instance
+			},
+		});
 	});
 }
-
 /* testimonials */
 
 /*
