@@ -1226,24 +1226,26 @@ function updateDates() {
 	});
 }
 
-// Run once on page load
-updateDates();
-
-// Create a new instance of MutationObserver
-const observer = new MutationObserver(updateDates);
-
-// Configuration of the observer:
-const config = { childList: true, subtree: true };
-
-// Start observing the target node for configured mutations
-observer.observe(document.getElementById("post-list"), config);
-
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets
 	// you could also use addEventListener() instead
 	window.onload = function () {
+		//
+		// Run once on page load
 		updateDates();
+
+		//if we are on a page with post-lists - only the Resource page
+		if (document.getElementById("post-list")) {
+			// Create a new instance of MutationObserver
+			const observer = new MutationObserver(updateDates);
+
+			// Configuration of the observer:
+			const config = { childList: true, subtree: true };
+
+			// Start observing the target node for configured mutations
+			observer.observe(document.getElementById("post-list"), config);
+		}
 
 		// OPTIONAL - waits til next tick render to run code (prevents running in the middle of render tick)
 		window.requestAnimationFrame(function () {
