@@ -1175,11 +1175,76 @@ function accordion() {
 	}
 }
 
+// Change dates to 'pretty' text
+function updateDates() {
+	// Get all elements with class .resource-card_date that haven't been processed yet
+	const dateElements = document.querySelectorAll(".date:not([data-processed])");
+
+	// Get the current date
+	const currentDate = new Date();
+
+	// Loop through each date element
+	dateElements.forEach((dateElement) => {
+		// Get the date string from the element
+		const dateString = dateElement.textContent.trim();
+
+		// Parse the date string into a Date object
+		const postDate = new Date(dateString);
+
+		// Calculate the difference between the current date and the post date
+		const timeDiff = currentDate.getTime() - postDate.getTime();
+
+		// Calculate the time difference in days, weeks, months, and years
+		const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+		const weeksDiff = Math.floor(daysDiff / 7);
+		const monthsDiff = Math.floor(daysDiff / 30);
+		const yearsDiff = Math.floor(daysDiff / 365);
+
+		// Determine the appropriate string to display based on the time difference
+		let displayString;
+		if (timeDiff >= 0) {
+			if (daysDiff === 0) {
+				displayString = "Today";
+			} else if (yearsDiff > 0) {
+				displayString = `${yearsDiff} year${yearsDiff > 1 ? "s" : ""} ago`;
+			} else if (monthsDiff > 0) {
+				displayString = `${monthsDiff} month${monthsDiff > 1 ? "s" : ""} ago`;
+			} else if (weeksDiff > 0) {
+				displayString = `${weeksDiff} week${weeksDiff > 1 ? "s" : ""} ago`;
+			} else {
+				displayString = `${daysDiff} day${daysDiff > 1 ? "s" : ""} ago`;
+			}
+		} else {
+			displayString = ""; // If the date is in the future, set string to empty
+		}
+
+		// Update the text content of the date element
+		dateElement.textContent = displayString;
+
+		// Mark the date element as processed
+		dateElement.setAttribute("data-processed", "true");
+	});
+}
+
+// Run once on page load
+updateDates();
+
+// Create a new instance of MutationObserver
+const observer = new MutationObserver(updateDates);
+
+// Configuration of the observer:
+const config = { childList: true, subtree: true };
+
+// Start observing the target node for configured mutations
+observer.observe(document.getElementById("post-list"), config);
+
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets
 	// you could also use addEventListener() instead
 	window.onload = function () {
+		updateDates();
+
 		// OPTIONAL - waits til next tick render to run code (prevents running in the middle of render tick)
 		window.requestAnimationFrame(function () {
 			// GSAP custom code goes here
