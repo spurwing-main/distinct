@@ -280,18 +280,6 @@ try {
 	console.log("no home hero");
 }
 
-/* sticky home hero */
-function stickyHomeHero() {
-	ScrollTrigger.create({
-		trigger: ".s-home-intro",
-		start: "top 100%",
-		end: "top 0%",
-		scrub: true,
-		pin: ".s-home-hero",
-		pinSpacing: false,
-	});
-}
-
 /* split text */
 function splitText() {
 	const splitTexts = document.querySelectorAll(".anim-split-text");
@@ -328,6 +316,48 @@ function splitText() {
 
 	ScrollTrigger.addEventListener("refresh", setupSplits);
 	setupSplits();
+}
+
+/* slide text */
+function slideText() {
+	const splitTexts = document.querySelectorAll(".anim-slide-text");
+
+	function setupSlides() {
+		splitTexts.forEach((text) => {
+			// Reset if needed
+			// if (text.lines[0].anim) {
+			// 	text.anim.progress(1).kill();
+			// 	text.lines.revert();
+			// }
+
+			text.split = new SplitText(text, {
+				type: "lines",
+				linesClass: "slide-line",
+			});
+
+			text.parent = new SplitText(text, {
+				linesClass: "slide-line-parent",
+			});
+
+			// text.anim = [];
+
+			text.anim = gsap.from(text.split.lines, {
+				ScrollTrigger: {
+					trigger: text,
+					toggleActions: "play pause resume reverse",
+					start: "top 60%",
+					end: "top 20%",
+					scrub: true,
+				},
+				ease: "circ.out",
+				y: 100,
+				stagger: 0.02,
+			});
+		});
+	}
+
+	ScrollTrigger.addEventListener("refresh", setupSlides);
+	setupSlides();
 }
 
 /* flexccordion */
@@ -1226,16 +1256,136 @@ function updateDates() {
 	});
 }
 
+// change header bg colour on page scroll
+function headerBg() {
+	// Select the elements
+	const header = document.querySelector(".header");
+
+	// Get the height of the header element
+	const headerHeight = header.offsetHeight;
+
+	// Function to handle scroll event
+	function handleScroll() {
+		// Check if the page has been scrolled by the height of the header
+
+		if (window.scrollY >= headerHeight) {
+			// Add 'is-scrolled' class to header
+			header.classList.add("is-scrolled");
+		} else {
+			// Remove 'is-scrolled' class from header
+			header.classList.remove("is-scrolled");
+		}
+	}
+
+	// Listen for scroll event
+	window.addEventListener("scroll", handleScroll);
+}
+
+function navlinkhover() {
+	let mm = gsap.matchMedia();
+
+	// add a media query. When it matches, the associated function will run
+	mm.add("(min-width: 768px)", () => {
+		const navLinks = document.querySelectorAll(".nav-link");
+		const navDropdowns = document.querySelectorAll(".nav_dropdown");
+		gsap.set(".nav_dropdown", { opacity: 0, height: 0 });
+
+		// Function to animate dropdown when hovering over nav-link
+		function showDropdown() {
+			const dropdown = this.querySelector(".nav_dropdown");
+			const tl_show = gsap.timeline();
+			tl_show.to(dropdown, { height: "auto", duration: 0.5 });
+			tl_show.to(dropdown, { opacity: 1, duration: 0.5 }, "<+=0.2");
+		}
+
+		// Function to close dropdown when hovering away from nav-link
+		function hideDropdown() {
+			const dropdown = this.querySelector(".nav_dropdown");
+			const tl_close = gsap.timeline();
+			tl_close.to(dropdown, { height: 0, duration: 0.5 });
+			tl_close.to(dropdown, { opacity: 0, duration: 0.5 }, "<+=0.2");
+		}
+
+		// Loop through each nav-link and add event listeners
+		navLinks.forEach((navLink) => {
+			navLink.addEventListener("mouseenter", showDropdown);
+			navLink.addEventListener("mouseleave", hideDropdown);
+		});
+	});
+}
+
+function openCloseNav() {
+	let mm = gsap.matchMedia();
+
+	// add a media query. When it matches, the associated function will run
+	mm.add("(max-width: 767px)", () => {
+		const header = document.querySelector(".header");
+		const menuToggle = header.querySelector("#nav-button");
+		const navMenu = header.querySelector("#nav-menu");
+		const scrollWrap = document.querySelector("#smooth-wrapper");
+		const headerBg = header.querySelector(".header_bg");
+		const navLinks = header.querySelectorAll(".nav-link");
+		const logoLink = header.querySelector(".logo_link");
+
+		// create nav timeline
+		const tl_nav = navTimeline();
+
+		function toggleMenu() {
+			navMenu.classList.toggle("is-open");
+
+			if (navMenu.classList.contains("is-open")) {
+				scrollWrap.style.overflow = "hidden";
+				lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
+
+				tl_nav.play();
+			} else {
+				scrollWrap.style.overflow = "";
+				lenis.start();
+
+				tl_nav.reverse();
+			}
+		}
+
+		function navTimeline() {
+			const tl_nav = gsap.timeline({ paused: true });
+			tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
+			tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
+			tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
+			tl_nav.fromTo(
+				navMenu,
+				{ autoAlpha: 0, y: -20 },
+				{ autoAlpha: 1, y: 0, duration: 0.5 },
+				0
+			);
+			tl_nav.fromTo(
+				navLinks,
+				{ autoAlpha: 0, x: -20 },
+				{
+					autoAlpha: 1,
+					x: 0,
+					duration: 0.5,
+					stagger: 0.25,
+				},
+				0
+			);
+
+			return tl_nav;
+		}
+
+		menuToggle.addEventListener("click", toggleMenu);
+	});
+}
+
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
-	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets
-	// you could also use addEventListener() instead
+	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets. You could also use addEventListener() instead
 	window.onload = function () {
-		//
-		// Run once on page load
-		updateDates();
+		headerBg();
+		openCloseNav();
 
-		//if we are on a page with post-lists - only the Resource page
+		// Do date updating - Run once on page load
+		updateDates();
+		//and then set up a mutation observer if we are on a page with post-lists - only the Resource page
 		if (document.getElementById("post-list")) {
 			// Create a new instance of MutationObserver
 			const observer = new MutationObserver(updateDates);
@@ -1250,8 +1400,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		// OPTIONAL - waits til next tick render to run code (prevents running in the middle of render tick)
 		window.requestAnimationFrame(function () {
 			// GSAP custom code goes here
-			stickyHomeHero();
 			splitText();
+			navlinkhover();
+			//slideText();
 			try {
 				brandScroll();
 			} catch (err) {
