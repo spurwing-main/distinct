@@ -1279,6 +1279,11 @@ function headerBg() {
 
 	// Listen for scroll event
 	window.addEventListener("scroll", handleScroll);
+
+	// check on window resize
+	window.addEventListener("resize", function (event) {
+		handleScroll();
+	});
 }
 
 function navlinkhover() {
@@ -1317,62 +1322,72 @@ function navlinkhover() {
 function openCloseNav() {
 	let mm = gsap.matchMedia();
 
-	// add a media query. When it matches, the associated function will run
+	const header = document.querySelector(".header");
+	const menuToggle = header.querySelector("#nav-button");
+	const navMenu = header.querySelector("#nav-menu");
+	const scrollWrap = document.querySelector("#smooth-wrapper");
+	const headerBg = header.querySelector(".header_bg");
+	const navLinks = header.querySelectorAll(".nav-link");
+	const logoLink = header.querySelector(".logo_link");
+
+	// create nav timeline
+	const tl_nav = navTimeline();
+
+	function toggleMenu() {
+		navMenu.classList.toggle("is-open");
+
+		if (navMenu.classList.contains("is-open")) {
+			scrollWrap.style.overflow = "hidden";
+			lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
+
+			tl_nav.play();
+		} else {
+			scrollWrap.style.overflow = "";
+			lenis.start();
+
+			tl_nav.reverse();
+		}
+	}
+
+	function navTimeline() {
+		const tl_nav = gsap.timeline({ paused: true });
+		tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
+		tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
+		tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
+		tl_nav.fromTo(
+			navMenu,
+			{ autoAlpha: 0, y: -20 },
+			{ autoAlpha: 1, y: 0, duration: 0.5 },
+			0
+		);
+		tl_nav.fromTo(
+			navLinks,
+			{ autoAlpha: 0, x: -20 },
+			{
+				autoAlpha: 1,
+				x: 0,
+				duration: 0.5,
+				stagger: 0.25,
+			},
+			0
+		);
+
+		return tl_nav;
+	}
+	// run on small screens
 	mm.add("(max-width: 767px)", () => {
-		const header = document.querySelector(".header");
-		const menuToggle = header.querySelector("#nav-button");
-		const navMenu = header.querySelector("#nav-menu");
-		const scrollWrap = document.querySelector("#smooth-wrapper");
-		const headerBg = header.querySelector(".header_bg");
-		const navLinks = header.querySelectorAll(".nav-link");
-		const logoLink = header.querySelector(".logo_link");
-
-		// create nav timeline
-		const tl_nav = navTimeline();
-
-		function toggleMenu() {
-			navMenu.classList.toggle("is-open");
-
-			if (navMenu.classList.contains("is-open")) {
-				scrollWrap.style.overflow = "hidden";
-				lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
-
-				tl_nav.play();
-			} else {
-				scrollWrap.style.overflow = "";
-				lenis.start();
-
-				tl_nav.reverse();
-			}
-		}
-
-		function navTimeline() {
-			const tl_nav = gsap.timeline({ paused: true });
-			tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
-			tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
-			tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
-			tl_nav.fromTo(
-				navMenu,
-				{ autoAlpha: 0, y: -20 },
-				{ autoAlpha: 1, y: 0, duration: 0.5 },
-				0
-			);
-			tl_nav.fromTo(
-				navLinks,
-				{ autoAlpha: 0, x: -20 },
-				{
-					autoAlpha: 1,
-					x: 0,
-					duration: 0.5,
-					stagger: 0.25,
-				},
-				0
-			);
-
-			return tl_nav;
-		}
-
 		menuToggle.addEventListener("click", toggleMenu);
+	});
+
+	// check on window resize
+	window.addEventListener("resize", function (event) {
+		if (window.innerWidth > 767) {
+			// reset menu
+			scrollWrap.style.overflow = "";
+			lenis.start();
+			navMenu.classList.remove("is-open");
+			tl_nav.revert();
+		}
 	});
 }
 
