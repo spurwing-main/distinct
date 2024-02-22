@@ -587,11 +587,13 @@ function navHover() {
 				// Hide all images
 				gsap.to(subnavImages, { opacity: 0, display: "none", duration: 0.3 });
 				// Show the corresponding image
-				gsap.to(subnavImages[index], {
-					opacity: 1,
-					display: "block",
-					duration: 0.3,
-				});
+				if (subnavImages[index]) {
+					gsap.to(subnavImages[index], {
+						opacity: 1,
+						display: "block",
+						duration: 0.3,
+					});
+				}
 			});
 		});
 	});
@@ -1291,37 +1293,42 @@ function navlinkhover() {
 
 	// add a media query. When it matches, the associated function will run
 	mm.add("(min-width: 768px)", () => {
-		const navLinks = document.querySelectorAll(".nav-link");
+		const navLinks = document.querySelectorAll(".nav-link.is-trigger");
 		const navDropdowns = document.querySelectorAll(".nav_dropdown");
 		gsap.set(".nav_dropdown", { opacity: 0, height: 0 });
 
 		// Function to animate dropdown when hovering over nav-link
-		function showDropdown() {
-			const dropdown = this.querySelector(".nav_dropdown");
+		function showDropdown(index) {
+			console.log(index);
+			const dropdown = navDropdowns[index];
 			const tl_show = gsap.timeline();
+			gsap.set(dropdown, { opacity: 1 });
 			tl_show.to(dropdown, { height: "auto", duration: 0.5 });
-			tl_show.to(dropdown, { opacity: 1, duration: 0.5 }, "<+=0.2");
+			tl_show.to(dropdown, { opacity: 1, duration: 0.25 }, "<+=0.2");
 		}
 
 		// Function to close dropdown when hovering away from nav-link
-		function hideDropdown() {
-			const dropdown = this.querySelector(".nav_dropdown");
+		function hideDropdown(index) {
+			const dropdown = navDropdowns[index];
 			const tl_close = gsap.timeline();
 			tl_close.to(dropdown, { height: 0, duration: 0.5 });
-			tl_close.to(dropdown, { opacity: 0, duration: 0.5 }, "<+=0.2");
+			tl_close.to(dropdown, { opacity: 0, duration: 0.25 }, "<+=0.2");
 		}
 
 		// Loop through each nav-link and add event listeners
-		navLinks.forEach((navLink) => {
-			navLink.addEventListener("mouseenter", showDropdown);
-			navLink.addEventListener("mouseleave", hideDropdown);
+		navLinks.forEach((navLink, index) => {
+			navLink.addEventListener("mouseenter", function () {
+				showDropdown(index);
+			});
+			navLink.addEventListener("mouseleave", function () {
+				hideDropdown(index);
+			});
 		});
 	});
 }
 
 function openCloseNav() {
 	let mm = gsap.matchMedia();
-
 	const header = document.querySelector(".header");
 	const menuToggle = header.querySelector("#nav-button");
 	const navMenu = header.querySelector("#nav-menu");
@@ -1329,9 +1336,7 @@ function openCloseNav() {
 	const headerBg = header.querySelector(".header_bg");
 	const navLinks = header.querySelectorAll(".nav-link");
 	const logoLink = header.querySelector(".logo_link");
-
-	// create nav timeline
-	const tl_nav = navTimeline();
+	var tl_nav;
 
 	function toggleMenu() {
 		navMenu.classList.toggle("is-open");
@@ -1339,54 +1344,56 @@ function openCloseNav() {
 		if (navMenu.classList.contains("is-open")) {
 			scrollWrap.style.overflow = "hidden";
 			lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
-
-			tl_nav.play();
+			tl_nav.play(); /* open menu animation */
 		} else {
 			scrollWrap.style.overflow = "";
 			lenis.start();
-
 			tl_nav.reverse();
 		}
 	}
 
+	// Create nav animation timeline
 	function navTimeline() {
+		console.log("tl");
 		const tl_nav = gsap.timeline({ paused: true });
 		tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
 		tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
 		tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
-		tl_nav.fromTo(
-			navMenu,
-			{ autoAlpha: 0, y: -20 },
-			{ autoAlpha: 1, y: 0, duration: 0.5 },
-			0
-		);
-		tl_nav.fromTo(
-			navLinks,
-			{ autoAlpha: 0, x: -20 },
-			{
-				autoAlpha: 1,
-				x: 0,
-				duration: 0.5,
-				stagger: 0.25,
-			},
-			0
-		);
-
+		tl_nav.from(navMenu, { autoAlpha: 0, y: -20 }, 0);
+		// tl_nav.from(
+		// 	navLinks,
+		// 	{ autoAlpha: 0, x: -20, duration: 0.25, stagger: 0.1 },
+		// 	0
+		// );
 		return tl_nav;
 	}
+
+	function resetNav() {
+		console.log("reset nav");
+		scrollWrap.style.overflow = "";
+		lenis.start();
+		navMenu.classList.remove("is-open");
+		if (tl_nav) {
+			tl_nav.revert();
+		}
+	}
+
+	menuToggle.addEventListener("click", toggleMenu);
 	// run on small screens
 	mm.add("(max-width: 767px)", () => {
+		tl_nav = navTimeline();
 		menuToggle.addEventListener("click", toggleMenu);
+
+		return () => {
+			// clean up on large screens
+			resetNav();
+		};
 	});
 
 	// check on window resize
 	window.addEventListener("resize", function (event) {
 		if (window.innerWidth > 767) {
-			// reset menu
-			scrollWrap.style.overflow = "";
-			lenis.start();
-			navMenu.classList.remove("is-open");
-			tl_nav.revert();
+			resetNav();
 		}
 	});
 }
@@ -1469,7 +1476,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 							// endTrigger: '.split-slider_item:last-child',
 							// end: "bottom 150px",
 							scrub: true, // Smoothly animate the pinning
-							markers: true,
+							//markers: true,
 							onToggle: (self) => self.isActive && setSlide(slide),
 						},
 						opacity: 1,
