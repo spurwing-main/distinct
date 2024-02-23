@@ -81,10 +81,19 @@ function mount_splide_home_services(myClass) {
 			drag: true,
 			snap: true,
 			autoplay: false,
+			pauseOnHover: true,
+			interval: 10000,
 			arrows: true,
 			breakpoints: {
 				767: { perPage: 1 },
 				991: { perPage: 2 },
+			},
+			autoScroll: {
+				autoStart: true,
+				pauseOnHover: true,
+				pauseOnFocus: true,
+				rewind: false,
+				speed: 1,
 			},
 		});
 
@@ -92,7 +101,7 @@ function mount_splide_home_services(myClass) {
 		splide.on("mounted", function () {
 			Webflow.require("ix2").init();
 		});
-		splide.mount();
+		splide.mount(window.splide.Extensions);
 	}
 }
 try {
