@@ -62,6 +62,22 @@ function splide_progress(splide_instance) {
 	});
 }
 
+/* pause this splide on hover */
+function splide_hover_pause(splide_instance) {
+	const splide_track = splide_instance.root.querySelector(".splide__track"); //get child track
+	var AutoScroll = splide_instance.Components.AutoScroll;
+
+	// Pause Splide when hovering over the track
+	splide_track.addEventListener("mouseenter", function () {
+		AutoScroll.pause();
+	});
+
+	// Resume Splide when not hovering over the element
+	splide_track.addEventListener("mouseleave", function () {
+		AutoScroll.play();
+	});
+}
+
 /* homepage services */
 function mount_splide_home_services(myClass) {
 	let splides = document.querySelectorAll(myClass);
@@ -81,7 +97,7 @@ function mount_splide_home_services(myClass) {
 			drag: true,
 			snap: true,
 			autoplay: false,
-			pauseOnHover: true,
+			pauseOnHover: false,
 			interval: 10000,
 			arrows: true,
 			breakpoints: {
@@ -90,18 +106,20 @@ function mount_splide_home_services(myClass) {
 			},
 			autoScroll: {
 				autoStart: true,
-				pauseOnHover: true,
-				pauseOnFocus: true,
+				pauseOnHover: false,
+				pauseOnFocus: false,
 				rewind: false,
 				speed: 1,
 			},
 		});
 
-		splide_progress(splide); /* add progress bar */
 		splide.on("mounted", function () {
 			Webflow.require("ix2").init();
 		});
 		splide.mount(window.splide.Extensions);
+
+		splide_progress(splide); /* add progress bar */
+		splide_hover_pause(splide); //pause on hover on track
 	}
 }
 try {
@@ -615,7 +633,7 @@ function brandScroll() {
 		center: true,
 		draggable: true, // I'm just being fancy
 		inertia: true, // even fancier
-		speed: 1,
+		speed: 0.8,
 	});
 
 	/* Helper function from GSAP https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop */
@@ -1174,8 +1192,15 @@ function accordion() {
 	let headers = gsap.utils.toArray(".accordion_header");
 	let animations = panels.map(createAnimation); //create an animation function for every panel
 
+	// add click listener
 	headers.forEach((header) => {
 		header.addEventListener("click", () => playAnim(header));
+	});
+
+	// add hover listnener
+	panels.forEach((panel) => {
+		panel.addEventListener("mouseenter", () => handlePanelHover(panel));
+		panel.addEventListener("mouseleave", () => handlePanelHover(panel));
 	});
 
 	function playAnim(selectedHeader) {
@@ -1213,6 +1238,26 @@ function accordion() {
 				animation.reverse();
 			}
 		};
+	}
+
+	function handlePanelHover(panel) {
+		let header = panel.querySelector(".accordion_header");
+		let icon = panel.querySelector(".accordion_icon");
+
+		if (!isPanelOpen(panel)) {
+			// Change opacity only if the panel is not open
+			gsap.to(icon, {
+				opacity: panel.classList.contains("hovered") ? 1 : 0.4,
+				duration: 0.2,
+			});
+		}
+	}
+
+	function isPanelOpen(panel) {
+		// Check if the panel is currently opened (playing the animation)
+		// You may need to adjust this depending on how the animation is controlled
+		// For simplicity, you can use a class to check if the panel is open
+		return panel.classList.contains("open");
 	}
 }
 
