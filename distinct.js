@@ -397,7 +397,7 @@ function flexccordion() {
 		opacity: 0,
 	});
 	tl.set(".flexccordion_item:not(:nth-child(1)) .card", {
-		opacity: 0,
+		autoAlpha: 0,
 	});
 	tl.set(
 		[
@@ -428,6 +428,9 @@ function flexccordion() {
 				// Find the .card element within the parent item
 				const card = item.querySelector(".card");
 
+				// Get parent right element - we need to hide this so cards are hoverable */
+				const right = item.querySelector(".flexccordion_right");
+
 				// get bar
 				const bar = item.querySelector(".flexccordion-bar");
 				const bar_short = item.querySelector(".flexccordion-bar_short");
@@ -441,7 +444,8 @@ function flexccordion() {
 				tl_item.to(
 					gsap_flexccordion(".card"),
 					{
-						opacity: 0,
+						autoAlpha: 0,
+						// display: "none", /* we need to hide cards otherwise hover doesn't work */
 						duration: 0.1,
 					},
 					0.1
@@ -468,8 +472,9 @@ function flexccordion() {
 				tl_item.to(
 					card,
 					{
-						opacity: 1,
+						autoAlpha: 1,
 						duration: 0.35,
+						// display: "flex",
 					},
 					0.3
 				);
@@ -1014,31 +1019,6 @@ function collabs() {
 		});
 	});
 }
-/* testimonials */
-
-/*
-
-on load:
-- get all case study items x
-- set all img opacity 0
-- set all body opacity 0
-- set all caption opacity 0
-- get first item 
-	- set img, body, caption visible, 
-	- set item to active
-
-- get arrow elements
-- get progress slider
-- set slide index = 0
-
-on arrow click
-- change slide index
-- set current active item inactive
-- set next item active
-- update progress bar
-
-
-*/
 
 function slider_caseStudies() {
 	const caseStudies = {
@@ -1452,6 +1432,31 @@ function openCloseNav() {
 	});
 }
 
+function parallax() {
+	gsap.utils
+		.toArray(document.querySelectorAll(".parallax"))
+		.forEach((parallax) => {
+			const depth = 0.1;
+			const movement = -(parallax.offsetHeight * depth);
+
+			gsap.fromTo(
+				parallax,
+				{
+					y: -movement,
+				},
+				{
+					y: movement,
+					ease: "none",
+					scrollTrigger: {
+						trigger: parallax,
+						scrub: true,
+						markers: true,
+					},
+				}
+			);
+		});
+}
+
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets. You could also use addEventListener() instead
@@ -1489,6 +1494,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			collabs();
 			accordion();
 			navHover();
+			parallax();
 			try {
 				slider_caseStudies();
 			} catch (err) {
