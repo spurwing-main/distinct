@@ -230,11 +230,11 @@ try {
 }
 
 /* hero slider on homepage */
-function mount_splide_home_hero(myClass) {
+function mount_splide_home_hero_old(myClass) {
 	let splides = document.querySelectorAll(myClass);
 	for (let i = 0; i < splides.length; i++) {
 		let splide = new Splide(splides[i], {
-			type: "loop",
+			type: "fade",
 			rewind: true,
 			pauseOnHover: false,
 			pauseOnFocus: false,
@@ -301,11 +301,11 @@ function mount_splide_home_hero(myClass) {
 		splide.mount();
 	}
 }
-try {
-	mount_splide_home_hero(".splide.is-home-hero");
-} catch (err) {
-	console.log("no home hero");
-}
+// try {
+// 	mount_splide_home_hero(".splide.is-home-hero");
+// } catch (err) {
+// 	console.log("no home hero");
+// }
 
 /* split text */
 function splitText() {
@@ -978,7 +978,7 @@ function collabs() {
 			// row.logos = row.gsapScope(".collabs_item");
 			row.state = Flip.getState(row.logos, row.element);
 			row.startingHeight = gsap.getProperty(row.element, "height");
-			console.log(row.startingHeight);
+			// console.log(row.startingHeight);
 			// gsap.set(row, { height: row.startingHeight });
 		});
 
@@ -1073,7 +1073,7 @@ function slider_caseStudies() {
 	function updateProgress() {
 		const percent =
 			(caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) * 100;
-		console.log(percent);
+		// console.log(percent);
 		if (caseStudies.progressElement) {
 			gsap.to(caseStudies.progressElement, {
 				width: `${percent}%`,
@@ -1137,7 +1137,7 @@ function slider_caseStudies() {
 		//update cS indexes
 		updateIndexes();
 
-		console.log(caseStudies.currentSlideIndex);
+		// console.log(caseStudies.currentSlideIndex);
 
 		const tl_slide = gsap.timeline();
 		const gsap_component = gsap.utils.selector(caseStudies.component);
@@ -1333,7 +1333,7 @@ function navlinkhover() {
 
 		// Function to animate dropdown when hovering over nav-link
 		function showDropdown(index) {
-			console.log(index);
+			// console.log(index);
 			const dropdown = navDropdowns[index];
 			const tl_show = gsap.timeline();
 			gsap.set(dropdown, { opacity: 1 });
@@ -1388,7 +1388,6 @@ function openCloseNav() {
 
 	// Create nav animation timeline
 	function navTimeline() {
-		console.log("tl");
 		const tl_nav = gsap.timeline({ paused: true });
 		tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
 		tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
@@ -1403,7 +1402,7 @@ function openCloseNav() {
 	}
 
 	function resetNav() {
-		console.log("reset nav");
+		// console.log("reset nav");
 		scrollWrap.style.overflow = "";
 		lenis.start();
 		navMenu.classList.remove("is-open");
@@ -1450,7 +1449,7 @@ function parallax() {
 					scrollTrigger: {
 						trigger: parallax,
 						scrub: true,
-						markers: true,
+						markers: false,
 					},
 				}
 			);
