@@ -922,7 +922,9 @@ function collabs() {
 				gsapScope: gsap.utils.selector(instance),
 			};
 
-			const collabsRows = componentInfo.gsapScope(".collabs_list");
+			const collabsRows = componentInfo.gsapScope(
+				".collabs_list:not(.is-mobile)"
+			); /* don't process the mobile logos */
 
 			const rows = collabsRows.map((row) => ({
 				element: row,
