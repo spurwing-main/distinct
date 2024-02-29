@@ -230,7 +230,7 @@ try {
 }
 
 /* hero slider on homepage */
-function mount_splide_home_hero_old(myClass) {
+function mount_splide_home_hero(myClass) {
 	let splides = document.querySelectorAll(myClass);
 	for (let i = 0; i < splides.length; i++) {
 		let splide = new Splide(splides[i], {
@@ -301,11 +301,11 @@ function mount_splide_home_hero_old(myClass) {
 		splide.mount();
 	}
 }
-// try {
-// 	mount_splide_home_hero(".splide.is-home-hero");
-// } catch (err) {
-// 	console.log("no home hero");
-// }
+try {
+	mount_splide_home_hero(".splide.is-home-hero");
+} catch (err) {
+	console.log("no home hero");
+}
 
 /* split text */
 function splitText() {
