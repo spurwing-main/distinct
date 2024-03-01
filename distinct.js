@@ -181,11 +181,12 @@ function mount_splide_home_testimonials(myClass) {
 			waitForTransition: false,
 			updateOnMove: true,
 			trimSpace: "move",
-			type: "loop",
+			type: "fade",
 			drag: true,
 			snap: true,
 			autoplay: false,
 			arrows: true,
+			rewind: true,
 		});
 
 		splide_progress(splide); /* add progress bar */
