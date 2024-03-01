@@ -599,38 +599,6 @@ function featuresTab() {
 	});
 }
 
-function navHover() {
-	// Get all subnav elements
-	const subnavs = document.querySelectorAll(".subnav");
-
-	// Loop through each subnav
-	subnavs.forEach((subnav) => {
-		// Get subnav links and images within the current subnav
-		const subnavLinks = subnav.querySelectorAll(".subnav_link");
-		const subnavImages = subnav.querySelectorAll(".subnav_img");
-
-		// Hide all images except the first one
-		gsap.set(subnavImages, { opacity: 0, display: "none" });
-		gsap.set(subnavImages[0], { opacity: 1, display: "block" });
-
-		// Add event listeners to each subnav link
-		subnavLinks.forEach((link, index) => {
-			link.addEventListener("mouseenter", () => {
-				// Hide all images
-				gsap.to(subnavImages, { opacity: 0, display: "none", duration: 0.3 });
-				// Show the corresponding image
-				if (subnavImages[index]) {
-					gsap.to(subnavImages[index], {
-						opacity: 1,
-						display: "block",
-						duration: 0.3,
-					});
-				}
-			});
-		});
-	});
-}
-
 function brandScroll() {
 	const brands_loop = verticalLoop(".brands_list-item", {
 		repeat: -1,
@@ -1243,6 +1211,32 @@ function accordion() {
 	}
 }
 
+// add parallax effect to hero images
+function parallax() {
+	gsap.utils
+		.toArray(document.querySelectorAll(".parallax"))
+		.forEach((parallax) => {
+			const depth = 0.1;
+			const movement = -(parallax.offsetHeight * depth);
+
+			gsap.fromTo(
+				parallax,
+				{
+					y: -movement,
+				},
+				{
+					y: movement,
+					ease: "none",
+					scrollTrigger: {
+						trigger: parallax,
+						scrub: true,
+						markers: false,
+					},
+				}
+			);
+		});
+}
+
 // Change dates to 'pretty' text
 function updateDates() {
 	// Get all elements with class .resource-card_date that haven't been processed yet
@@ -1294,6 +1288,39 @@ function updateDates() {
 	});
 }
 
+// Show nav images on hover
+function navImages() {
+	// Get all subnav elements
+	const subnavs = document.querySelectorAll(".subnav");
+
+	// Loop through each subnav
+	subnavs.forEach((subnav) => {
+		// Get subnav links and images within the current subnav
+		const subnavLinks = subnav.querySelectorAll(".subnav_link");
+		const subnavImages = subnav.querySelectorAll(".subnav_img");
+
+		// Hide all images except the first one
+		gsap.set(subnavImages, { opacity: 0, display: "none" });
+		gsap.set(subnavImages[0], { opacity: 1, display: "block" });
+
+		// Add event listeners to each subnav link
+		subnavLinks.forEach((link, index) => {
+			link.addEventListener("mouseenter", () => {
+				// Hide all images
+				gsap.to(subnavImages, { opacity: 0, display: "none", duration: 0.3 });
+				// Show the corresponding image
+				if (subnavImages[index]) {
+					gsap.to(subnavImages[index], {
+						opacity: 1,
+						display: "block",
+						duration: 0.3,
+					});
+				}
+			});
+		});
+	});
+}
+
 // change header bg colour on page scroll
 function headerBg() {
 	// Select the elements
@@ -1324,6 +1351,7 @@ function headerBg() {
 	});
 }
 
+// open / close nav dropdowns on hover - DISABLED
 function navlinkhover() {
 	let mm = gsap.matchMedia();
 
@@ -1363,6 +1391,7 @@ function navlinkhover() {
 	});
 }
 
+// open / close nav on mobile - DISABLED
 function openCloseNav() {
 	let mm = gsap.matchMedia();
 	const header = document.querySelector(".header");
@@ -1433,37 +1462,12 @@ function openCloseNav() {
 	});
 }
 
-function parallax() {
-	gsap.utils
-		.toArray(document.querySelectorAll(".parallax"))
-		.forEach((parallax) => {
-			const depth = 0.1;
-			const movement = -(parallax.offsetHeight * depth);
-
-			gsap.fromTo(
-				parallax,
-				{
-					y: -movement,
-				},
-				{
-					y: movement,
-					ease: "none",
-					scrollTrigger: {
-						trigger: parallax,
-						scrub: true,
-						markers: false,
-					},
-				}
-			);
-		});
-}
-
 // wait until DOM is ready
 document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets. You could also use addEventListener() instead
 	window.onload = function () {
 		headerBg();
-		openCloseNav();
+		// openCloseNav();
 
 		// Do date updating - Run once on page load
 		updateDates();
@@ -1483,7 +1487,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		window.requestAnimationFrame(function () {
 			// GSAP custom code goes here
 			splitText();
-			navlinkhover();
+			// navlinkhover();
 			//slideText();
 			try {
 				brandScroll();
@@ -1494,7 +1498,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			featuresTab();
 			collabs();
 			accordion();
-			navHover();
+			navImages();
 			parallax();
 			try {
 				slider_caseStudies();
