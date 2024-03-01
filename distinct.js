@@ -1174,11 +1174,10 @@ function accordion() {
 			.timeline()
 			.from(body, {
 				height: 0,
-				duration: 0.75,
-				ease: "power1.inOut",
+				duration: 0.35,
 			})
-			.from(icon, { duration: 0.2, opacity: 0.4, ease: "none" }, 0)
-			.from(iconInner, { duration: 0.2, rotationZ: 0, ease: "none" }, 0)
+			.from(icon, { duration: 0.2, opacity: 0.4 }, 0)
+			.from(iconInner, { duration: 0.2, rotationZ: 0 }, 0)
 			.reverse();
 
 		return function (selected) {
