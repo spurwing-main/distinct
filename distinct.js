@@ -501,25 +501,24 @@ function flexccordion() {
 
 function featuresTab() {
 	/* set initial states */
-	(function features_set() {
-		const tl = gsap.timeline();
-		/* hide all images and text */
-		tl.set(".feature_body, .feature_img", {
-			opacity: 0,
-		});
-		/* set all titles opacity */
-		tl.set(".feature-title", {
-			opacity: 0.5,
-		});
 
-		/* make first item active */
-		tl.set(
-			".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
-			{
-				opacity: 1,
-			}
-		);
-	})();
+	const tl = gsap.timeline();
+	/* hide all images and text */
+	tl.set(".feature_body, .feature_img", {
+		opacity: 0,
+	});
+	/* set all titles opacity */
+	tl.set(".feature-title", {
+		opacity: 0.5,
+	});
+
+	/* make first item active */
+	tl.set(
+		".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
+		{
+			opacity: 1,
+		}
+	);
 
 	// event listener for feature titles
 	var featureTitles = document.querySelectorAll(".feature-title");
