@@ -1506,7 +1506,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				console.log("no brand scroll");
 			}
 			flexccordion();
-			featuresTab();
+			// featuresTab();
 			collabs();
 			accordion();
 			navImages();
