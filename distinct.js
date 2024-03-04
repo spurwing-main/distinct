@@ -543,30 +543,30 @@ function featuresTab() {
 			const img = item.querySelector(".feature_img");
 
 			// make other items inactive
-			tl_item.to(
-				gsap_features(".feature_body"),
-				{
-					opacity: 0,
-					duration: 0.35,
-				},
-				0
-			);
-			tl_item.to(
-				gsap_features(".feature_img"),
-				{
-					opacity: 0,
-					duration: 0.75,
-				},
-				0
-			);
-			tl_item.to(
-				gsap_features(".feature-title"),
-				{
-					opacity: 0.5,
-					duration: 0.15,
-				},
-				0
-			);
+			// tl_item.to(
+			// 	gsap_features(".feature_body"),
+			// 	{
+			// 		opacity: 0,
+			// 		duration: 0.35,
+			// 	},
+			// 	0
+			// );
+			// tl_item.to(
+			// 	gsap_features(".feature_img"),
+			// 	{
+			// 		opacity: 0,
+			// 		duration: 0.75,
+			// 	},
+			// 	0
+			// );
+			// tl_item.to(
+			// 	gsap_features(".feature-title"),
+			// 	{
+			// 		opacity: 0.5,
+			// 		duration: 0.15,
+			// 	},
+			// 	0
+			// );
 
 			// show item
 			tl_item.to(
@@ -1506,7 +1506,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				console.log("no brand scroll");
 			}
 			flexccordion();
-			// featuresTab();
+			featuresTab();
 			collabs();
 			accordion();
 			navImages();
