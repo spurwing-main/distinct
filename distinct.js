@@ -514,112 +514,11 @@ function featuresTab() {
 
 		/* make first item active */
 		tl.set(
-			".features_item:nth-child(1) :is(.feature_bod, .feature_img, .feature-title",
+			".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
 			{
 				opacity: 1,
 			}
 		);
-	})();
-
-	// event listener for feature titles
-	document.querySelectorAll(".feature-title").forEach((title, index) => {
-		// timeline for each item
-		const tl_item = gsap.timeline({ paused: false });
-
-		title.addEventListener("mouseover", () => {
-			feature_mouseOver();
-		});
-
-		function feature_mouseOver() {
-			// get parent features component
-			const features = title.closest(".features");
-			let gsap_features = gsap.utils.selector(features);
-
-			// Find the parent .features_item element
-			const item = title.closest(".features_item");
-			let gsap_item = gsap.utils.selector(item);
-
-			// Find the .feature_body element within the parent item
-			const body = item.querySelector(".feature_body");
-
-			// Find the img within the parent item
-			const img = item.querySelector(".feature_img");
-
-			// make other items inactive
-			tl_item.to(
-				gsap_features(".feature_body"),
-				{
-					opacity: 0,
-					duration: 0.35,
-				},
-				0
-			);
-			tl_item.to(
-				gsap_features(".feature_img"),
-				{
-					opacity: 0,
-					duration: 0.75,
-				},
-				0
-			);
-			tl_item.to(
-				gsap_features(".feature-title"),
-				{
-					opacity: 0.5,
-					duration: 0.15,
-				},
-				0
-			);
-
-			// show item
-			tl_item.to(
-				title,
-				{
-					opacity: 1,
-					duration: 0.85,
-				},
-				0.05
-			);
-			tl_item.to(
-				body,
-				{
-					opacity: 1,
-					duration: 0.3,
-				},
-				0.2
-			);
-			tl_item.to(
-				img,
-				{
-					opacity: 1,
-					duration: 0.85,
-				},
-				0.05
-			);
-		}
-	});
-}
-
-function featuresTab_v2() {
-	/* set initial states */
-	(function features_set() {
-		const tl = gsap.timeline();
-		/* hide all images and text */
-		tl.set(".feature_body, .feature_img", {
-			opacity: 0,
-		});
-		/* set all titles opacity */
-		tl.set(".feature-title", {
-			opacity: 0.5,
-		});
-
-		/* make first item active */
-		// tl.set(
-		// 	".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
-		// 	{
-		// 		opacity: 1,
-		// 	}
-		// );
 	})();
 
 	// event listener for feature titles
@@ -704,12 +603,12 @@ function featuresTab_v2() {
 		title.addEventListener("mouseover", () => {
 			title.animation.play();
 		});
-		// title.addEventListener("mouseout", () => {
-		// 	title.animation.reverse();
-		// });
+		title.addEventListener("mouseout", () => {
+			title.animation.reverse();
+		});
 
 		/* play for first item */
-		featureTitles[0].animation.play();
+		// featureTitles[0].animation.play();
 	});
 }
 
@@ -1608,7 +1507,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				console.log("no brand scroll");
 			}
 			flexccordion();
-			// featuresTab_v2();
+			featuresTab();
 			collabs();
 			accordion();
 			navImages();
