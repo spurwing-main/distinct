@@ -614,24 +614,22 @@ function featuresTab_v2() {
 		});
 
 		/* make first item active */
-		tl.set(
-			".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
-			{
-				opacity: 1,
-			}
-		);
+		// tl.set(
+		// 	".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
+		// 	{
+		// 		opacity: 1,
+		// 	}
+		// );
 	})();
 
 	// event listener for feature titles
-	document.querySelectorAll(".feature-title").forEach((title, index) => {
+	var featureTitles = document.querySelectorAll(".feature-title");
+	featureTitles.forEach((title, index) => {
 		// timeline for each item
 		const tl_item = gsap.timeline({ paused: true }); // Change paused to true
 
-		title.addEventListener("mouseover", () => {
-			feature_mouseOver();
-		});
-
-		function feature_mouseOver() {
+		/* create the timeline */
+		(function feature_mouseOver() {
 			// get parent features component
 			const features = title.closest(".features");
 			let gsap_features = gsap.utils.selector(features);
@@ -697,10 +695,21 @@ function featuresTab_v2() {
 				},
 				0.05
 			);
+		})();
 
-			// Play the timeline
-			tl_item.play();
-		}
+		/* store timeline on DOM node */
+		title.animation = tl_item;
+
+		/* create event handlers */
+		title.addEventListener("mouseover", () => {
+			title.animation.play();
+		});
+		// title.addEventListener("mouseout", () => {
+		// 	title.animation.reverse();
+		// });
+
+		/* play for first item */
+		featureTitles[0].animation.play();
 	});
 }
 
