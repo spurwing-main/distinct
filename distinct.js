@@ -172,7 +172,7 @@ function mount_splide_home_testimonials(myClass) {
 	for (let i = 0; i < splides.length; i++) {
 		let splide = new Splide(splides[i], {
 			perMove: 1,
-			gap: "1rem",
+			gap: "0rem",
 			focus: 0,
 			speed: 600,
 			dragAngleThreshold: 60,
@@ -919,8 +919,8 @@ function collabs() {
 			// get the logos that should start 'wide' - ie with a large flex-basis. This creates the gap
 			// 1st row we want 1st logo, 2nd row we want 2nd, 3rd row 3rd (and then we loop back to 1st logo if we have 4+ rows).
 			instance.wide_start = instance.gsapScope([
-				".collabs_list-wrap:nth-child(3n+1) .collabs_item:nth-child(3n+1)",
-				".collabs_list-wrap:nth-child(3n+2) .collabs_item:nth-child(3n+2)",
+				".collabs_list-wrap:nth-child(2n+1) .collabs_item:nth-child(3n+1)",
+				".collabs_list-wrap:nth-child(2n+2) .collabs_item:nth-child(3n+2)",
 				".collabs_list-wrap:nth-child(3n+3) .collabs_item:nth-child(3n+3)",
 			]);
 			// get the logos that should be wide at the end of the animation - this is the last logo in each row.
