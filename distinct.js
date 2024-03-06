@@ -174,7 +174,7 @@ function mount_splide_home_testimonials(myClass) {
 			perMove: 1,
 			gap: "0rem",
 			focus: 0,
-			speed: 600,
+			speed: 750,
 			dragAngleThreshold: 60,
 			perPage: 1,
 			rewindSpeed: 400,
