@@ -487,6 +487,7 @@ function flexccordion() {
 					},
 					0.2
 				);
+				tl_item.addLabel("open", ">");
 				tl_item.to(
 					bar_short,
 					{
@@ -495,6 +496,9 @@ function flexccordion() {
 					},
 					0.2
 				);
+
+				// when body anim is done, set body height to auto
+				tl_item.set(body, { height: "auto", opacity: 1 }, "open");
 			});
 		});
 }
