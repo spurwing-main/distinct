@@ -1227,7 +1227,7 @@ function parallax() {
 	gsap.utils
 		.toArray(document.querySelectorAll(".parallax"))
 		.forEach((parallax) => {
-			const depth = 0.1;
+			const depth = 0.125;
 			const movement = -(parallax.offsetHeight * depth);
 
 			gsap.fromTo(
