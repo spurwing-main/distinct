@@ -102,7 +102,7 @@ function mount_splide_home_services(myClass) {
 			arrows: true,
 			breakpoints: {
 				767: { perPage: 1 },
-				991: { perPage: 2 },
+				1200: { perPage: 2 },
 			},
 			autoScroll: {
 				autoStart: true,
