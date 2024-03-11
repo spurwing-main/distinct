@@ -1241,6 +1241,7 @@ function parallax() {
 				},
 				{
 					y: movement,
+					opacity: 1,
 					ease: "none",
 					scrollTrigger: {
 						trigger: parallax,
@@ -1482,7 +1483,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets. You could also use addEventListener() instead
 	window.onload = function () {
 		headerBg();
-		// openCloseNav();
 
 		// Do date updating - Run once on page load
 		updateDates();
@@ -1502,8 +1502,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		window.requestAnimationFrame(function () {
 			// GSAP custom code goes here
 			splitText();
-			// navlinkhover();
-			//slideText();
 			try {
 				brandScroll();
 			} catch (err) {
