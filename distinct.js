@@ -1234,13 +1234,14 @@ function parallax() {
 			const depth = 0.125;
 			const movement = -(parallax.offsetHeight * depth);
 
+			gsap.set(parallax, { y: -movement });
 			gsap.set(parallax, { opacity: 1 });
 
-			gsap.fromTo(
+			gsap.to(
 				parallax,
-				{
-					y: -movement,
-				},
+				// {
+				// 	y: -movement,
+				// },
 				{
 					y: movement,
 					ease: "none",
