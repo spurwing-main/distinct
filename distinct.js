@@ -1234,6 +1234,8 @@ function parallax() {
 			const depth = 0.125;
 			const movement = -(parallax.offsetHeight * depth);
 
+			gsap.set(parallax, { opacity: 1 });
+
 			gsap.fromTo(
 				parallax,
 				{
@@ -1241,7 +1243,6 @@ function parallax() {
 				},
 				{
 					y: movement,
-					opacity: 1,
 					ease: "none",
 					scrollTrigger: {
 						trigger: parallax,
