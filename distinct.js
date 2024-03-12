@@ -618,11 +618,24 @@ function featuresTab() {
 function brandScroll() {
 	const brands_loop = verticalLoop(".brands_list-item", {
 		repeat: -1,
-		paused: false,
+		paused: true,
 		center: true,
 		draggable: true, // I'm just being fancy
 		inertia: true, // even fancier
 		speed: 0.8,
+	});
+
+	brands_loop.play();
+
+	/* on user scroll, pause brandscroll to avoid glitching */
+	window.addEventListener("scroll", (event) => {
+		console.log("scroll");
+		brands_loop.pause();
+	});
+
+	window.addEventListener("scrollend", (event) => {
+		console.log("scroll ended");
+		brands_loop.play();
 	});
 
 	/* Helper function from GSAP https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop */
@@ -1237,11 +1250,11 @@ function parallax() {
 			gsap.set(parallax, { y: -movement });
 			gsap.set(parallax, { opacity: 1 });
 
-			gsap.to(
+			gsap.fromTo(
 				parallax,
-				// {
-				// 	y: -movement,
-				// },
+				{
+					y: -movement,
+				},
 				{
 					y: movement,
 					ease: "none",
