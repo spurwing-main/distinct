@@ -1298,8 +1298,12 @@ Features:
 
 				// add hover listener
 				panels.forEach((panel) => {
-					panel.addEventListener("mouseenter", () => handlePanelHover(panel));
-					panel.addEventListener("mouseleave", () => handlePanelHover(panel));
+					if ("ontouchstart" in document.documentElement) {
+						/* mobile device, don't do hover */
+					} else {
+						panel.addEventListener("mouseenter", () => handlePanelHover(panel));
+						panel.addEventListener("mouseleave", () => handlePanelHover(panel));
+					}
 				});
 
 				function playAnim(selectedHeader) {
@@ -1398,33 +1402,6 @@ Features:
 					tl.from(parallax, { autoAlpha: 0 }, 0.5);
 				});
 		};
-
-		// distinct.anim.parallax = function () {
-		// 	if (!document.querySelector(".parallax")) return;
-
-		// 	gsap.utils
-		// 		.toArray(document.querySelectorAll(".parallax"))
-		// 		.forEach((parallax) => {
-		// 			const depth = 0.125;
-		// 			const movement = -(parallax.offsetHeight * depth);
-
-		// 			gsap.set(parallax, {
-		// 				autoAlpha: 1, // Set initial opacity to 1
-		// 				y: -movement, // Set initial y position
-		// 				scale: 1.25, // Set initial scale
-		// 			});
-
-		// 			gsap.to(parallax, {
-		// 				y: movement,
-		// 				ease: "none",
-		// 				scrollTrigger: {
-		// 					trigger: parallax,
-		// 					scrub: true,
-		// 					markers: false,
-		// 				},
-		// 			});
-		// 		});
-		// };
 
 		// Change dates to 'pretty' text
 		distinct.anim.updateDates = function () {
