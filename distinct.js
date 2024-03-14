@@ -394,6 +394,70 @@ function distinct_anim() {
 			setupSlides();
 		};
 
+		distinct.anim.slideText_v2 = function () {
+			/* Function */
+			gsap.registerPlugin(ScrollTrigger, SplitText);
+			return;
+
+			document.fonts.ready.then(function () {
+				console.log("ready");
+				// we have to wait for custom fonts to load first
+
+				/* --- Split the text, Client Title --- */
+				function setupSplits() {
+					const targets = gsap.utils.toArray(".anim-slide-text");
+					targets.forEach((target) => {
+						let first_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-inner",
+						});
+
+						let second_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-outer",
+						});
+
+						let tl_split = gsap.timeline();
+
+						// function kill() {
+						// 	tl_split.clear().time(0);
+						// 	split.revert();
+						// }
+
+						// kill();
+
+						// parent_split.split({
+						// 	type: "lines",
+						// 	linesClass: "split-line-wrap-3",
+						// });
+
+						tl_split.from(first_split.lines, {
+							duration: 1,
+							// opacity: 0,
+							y: "100%",
+							// ease: "none",
+							stagger: 0.2,
+							scrollTrigger: {
+								trigger: target,
+								// markers: true,
+								start: "top 80%",
+								// toggleActions: "restart pause resume reverse",
+								// end: "bottom center",
+								// scrub: true,
+							},
+							onComplete: () => {
+								// first_split.revert();
+								// second_split.revert();
+								// child_split.revert();
+							},
+						});
+					});
+				}
+
+				setupSplits();
+			});
+		};
+
 		/* flexccordion */
 		distinct.anim.flexccordion = function () {
 			if (!document.querySelector(".flexccordion_item")) return;
@@ -1201,79 +1265,6 @@ Features:
 			}
 		};
 
-		distinct.anim.accordion_v1 = function () {
-			let panels = gsap.utils.toArray(".accordion-panel");
-			let headers = gsap.utils.toArray(".accordion_header");
-			let animations = panels.map(createAnimation); //create an animation function for every panel
-
-			// add click listener
-			headers.forEach((header) => {
-				header.addEventListener("click", () => playAnim(header));
-			});
-
-			// add hover listnener
-			panels.forEach((panel) => {
-				panel.addEventListener("mouseenter", () => handlePanelHover(panel));
-				panel.addEventListener("mouseleave", () => handlePanelHover(panel));
-			});
-
-			function playAnim(selectedHeader) {
-				animations.forEach((animation) => animation(selectedHeader));
-			}
-
-			function createAnimation(element) {
-				let header = element.querySelector(".accordion_header");
-				let body = element.querySelector(".accordion_body-wrap");
-				let icon = element.querySelector(".accordion_icon");
-				let iconInner = element.querySelector(".accordion_icon-inner");
-
-				gsap.set(body, { height: "auto" });
-				gsap.set(icon, { opacity: 1 });
-				gsap.set(iconInner, {
-					rotationZ: 45,
-					transformOrigin: "50% 50%",
-				});
-
-				let animation = gsap
-					.timeline()
-					.from(body, {
-						height: 0,
-						duration: 0.35,
-					})
-					.from(icon, { duration: 0.2, opacity: 0.4 }, 0)
-					.from(iconInner, { duration: 0.2, rotationZ: 0 }, 0)
-					.reverse();
-
-				return function (selected) {
-					if (selected === header) {
-						animation.reversed(!animation.reversed());
-					} else {
-						animation.reverse();
-					}
-				};
-			}
-
-			function handlePanelHover(panel) {
-				let header = panel.querySelector(".accordion_header");
-				let icon = panel.querySelector(".accordion_icon");
-
-				if (!isPanelOpen(panel)) {
-					// Change opacity only if the panel is not open
-					gsap.to(icon, {
-						opacity: panel.classList.contains("hovered") ? 1 : 0.4,
-						duration: 0.2,
-					});
-				}
-			}
-
-			function isPanelOpen(panel) {
-				// Check if the panel is currently opened (playing the animation)
-				// You may need to adjust this depending on how the animation is controlled
-				// For simplicity, you can use a class to check if the panel is open
-				return panel.classList.contains("open");
-			}
-		};
-
 		distinct.anim.accordion = function () {
 			if (!document.querySelector(".accordion_list")) return;
 
@@ -1967,6 +1958,8 @@ Features:
 	} catch (error) {
 		console.error("Error executing distinct.anim.splitText():", error);
 	}
+
+	// distinct.anim.slideText_v2();
 
 	try {
 		distinct.anim.brandScroll();
