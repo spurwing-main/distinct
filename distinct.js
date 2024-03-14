@@ -80,7 +80,9 @@ function distinct_anim() {
 
 			let splides = document.querySelectorAll(myClass);
 			for (let i = 0; i < splides.length; i++) {
-				let splide = new Splide(splides[i], {
+				const isMobile = window.innerWidth <= 767;
+
+				let splideOptions = {
 					perMove: 1,
 					gap: "1rem",
 					focus: 0,
@@ -89,59 +91,48 @@ function distinct_anim() {
 					perPage: 3,
 					rewindSpeed: 400,
 					waitForTransition: false,
-					// updateOnMove: true,
-					// trimSpace: "move",
+					updateOnMove: true,
+					trimSpace: "move",
 					type: "loop",
 					drag: true,
 					snap: true,
-					autoplay: "pause",
-					intersection: {
-						inView: {
-							autoScroll: {
-								autoStart: true,
-							},
-						},
-						outView: {
-							autoScroll: {
-								autoStart: false,
-							},
-						},
-					},
+					autoplay: false,
 					pauseOnHover: false,
-					// interval: 10000,
+					interval: 10000,
 					arrows: true,
 					breakpoints: {
-						767: {
-							perPage: 1,
-							autoScroll: {
-								autoStart: false,
-							},
-							autoplay: true,
-						},
+						767: { perPage: 1 },
 						1200: { perPage: 2 },
 					},
-					autoScroll: {
+				};
+
+				// Conditionally add autoScroll options if not on mobile
+				if (!isMobile) {
+					splideOptions.autoScroll = {
+						autoStart: true,
 						pauseOnHover: false,
 						pauseOnFocus: false,
 						rewind: false,
 						speed: 1,
-					},
-				});
+					};
+				}
+
+				let splide = new Splide(splides[i], splideOptions);
 
 				splide.on("mounted", function () {
-					// Webflow.require("ix2").init();
+					Webflow.require("ix2").init();
 				});
 
-				/* gsap scroll trigger to pause when out of viewport */
+				// /* gsap scroll trigger to pause when out of viewport */
 				// ScrollTrigger.create({
 				// 	trigger: ".s-home-services",
 				// 	start: "top bottom",
 				// 	end: "bottom top",
 				// 	// markers: true,
-				// 	onEnter: () => splide.Components.AutoScroll.play(),
-				// 	onLeave: () => splide.Components.AutoScroll.pause(),
-				// 	onEnterBack: () => splide.Components.AutoScroll.play(),
-				// 	onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				// 	onEnter: () => splideOptions.AutoScroll.play(),
+				// 	onLeave: () => splideOptions.AutoScroll.pause(),
+				// 	onEnterBack: () => splideOptions.AutoScroll.play(),
+				// 	onLeaveBack: () => splideOptions.AutoScroll.pause(),
 				// });
 
 				splide.mount(window.splide.Extensions);
