@@ -1896,23 +1896,23 @@ Features:
 	window.scrollBy(0, 2);
 	window.scrollBy(0, -2);
 
-	try {
-		distinct.anim.headerBg();
-	} catch (error) {
-		console.error("Error executing distinct.anim.headerBg():", error);
-	}
+	// try {
+	// 	distinct.anim.headerBg();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.headerBg():", error);
+	// }
 
-	try {
-		distinct.anim.updateDates();
-	} catch (error) {
-		console.error("Error executing distinct.anim.updateDates():", error);
-	}
+	// try {
+	// 	distinct.anim.updateDates();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.updateDates():", error);
+	// }
 
-	try {
-		distinct.anim.updateDates_watch();
-	} catch (error) {
-		console.error("Error executing distinct.anim.updateDates_watch():", error);
-	}
+	// try {
+	// 	distinct.anim.updateDates_watch();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.updateDates_watch():", error);
+	// }
 
 	try {
 		distinct.anim.splide_home_services();
@@ -1923,103 +1923,103 @@ Features:
 		);
 	}
 
-	try {
-		distinct.anim.splide_sustainability_approach();
-	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_sustainability_approach():",
-			error
-		);
-	}
+	// try {
+	// 	distinct.anim.splide_sustainability_approach();
+	// } catch (error) {
+	// 	console.error(
+	// 		"Error executing distinct.anim.splide_sustainability_approach():",
+	// 		error
+	// 	);
+	// }
 
-	try {
-		distinct.anim.splide_home_testimonials();
-	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_home_testimonials():",
-			error
-		);
-	}
+	// try {
+	// 	distinct.anim.splide_home_testimonials();
+	// } catch (error) {
+	// 	console.error(
+	// 		"Error executing distinct.anim.splide_home_testimonials():",
+	// 		error
+	// 	);
+	// }
 
-	try {
-		distinct.anim.splide_about_ethos();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splide_about_ethos():", error);
-	}
+	// try {
+	// 	distinct.anim.splide_about_ethos();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splide_about_ethos():", error);
+	// }
 
-	try {
-		distinct.anim.splide_home_hero();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splide_home_hero():", error);
-	}
+	// try {
+	// 	distinct.anim.splide_home_hero();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splide_home_hero():", error);
+	// }
 
-	try {
-		distinct.anim.splitText();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splitText():", error);
-	}
+	// try {
+	// 	distinct.anim.splitText();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splitText():", error);
+	// }
 
-	// distinct.anim.slideText_v2();
+	// // distinct.anim.slideText_v2();
 
-	try {
-		distinct.anim.brandScroll();
-	} catch (error) {
-		console.error("Error executing distinct.anim.brandScroll():", error);
-	}
+	// try {
+	// 	distinct.anim.brandScroll();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.brandScroll():", error);
+	// }
 
-	try {
-		distinct.anim.flexccordion();
-	} catch (error) {
-		console.error("Error executing distinct.anim.flexccordion():", error);
-	}
+	// try {
+	// 	distinct.anim.flexccordion();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.flexccordion():", error);
+	// }
 
-	try {
-		distinct.anim.featuresTab();
-	} catch (error) {
-		console.error("Error executing distinct.anim.featuresTab():", error);
-	}
+	// try {
+	// 	distinct.anim.featuresTab();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.featuresTab():", error);
+	// }
 
-	try {
-		distinct.anim.collabs();
-	} catch (error) {
-		console.error("Error executing distinct.anim.collabs():", error);
-	}
+	// try {
+	// 	distinct.anim.collabs();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.collabs():", error);
+	// }
 
-	try {
-		distinct.anim.accordion();
-	} catch (error) {
-		console.error("Error executing distinct.anim.accordion():", error);
-	}
+	// try {
+	// 	distinct.anim.accordion();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.accordion():", error);
+	// }
 
-	try {
-		distinct.anim.navImages();
-	} catch (error) {
-		console.error("Error executing distinct.anim.navImages():", error);
-	}
+	// try {
+	// 	distinct.anim.navImages();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.navImages():", error);
+	// }
 
-	try {
-		distinct.anim.parallax();
-	} catch (error) {
-		console.error("Error executing distinct.anim.parallax():", error);
-	}
+	// try {
+	// 	distinct.anim.parallax();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.parallax():", error);
+	// }
 
-	try {
-		distinct.anim.slider_caseStudies();
-	} catch (error) {
-		console.error("Error executing distinct.anim.slider_caseStudies():", error);
-	}
+	// try {
+	// 	distinct.anim.slider_caseStudies();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.slider_caseStudies():", error);
+	// }
 
-	try {
-		distinct.anim.splitSliders();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splitSliders():", error);
-	}
+	// try {
+	// 	distinct.anim.splitSliders();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splitSliders():", error);
+	// }
 
-	try {
-		distinct.anim.whyDistinct();
-	} catch (error) {
-		console.error("Error executing distinct.anim.whyDistinct():", error);
-	}
+	// try {
+	// 	distinct.anim.whyDistinct();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.whyDistinct():", error);
+	// }
 }
 
 // // wait until DOM is ready
