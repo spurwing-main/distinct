@@ -99,7 +99,14 @@ function distinct_anim() {
 					// interval: 10000,
 					arrows: true,
 					breakpoints: {
-						767: { perPage: 1 },
+						767: {
+							perPage: 1,
+							autoScroll: {
+								// on mobile don't autoscroll, just auto advance
+								autoStart: true,
+							},
+							autoplay: true,
+						},
 						1200: { perPage: 2 },
 					},
 					autoScroll: {
@@ -114,6 +121,19 @@ function distinct_anim() {
 				splide.on("mounted", function () {
 					// Webflow.require("ix2").init();
 				});
+
+				/* gsap scroll trigger to pause when out of viewport */
+				ScrollTrigger.create({
+					trigger: ".s-home-services",
+					start: "top bottom",
+					end: "bottom top",
+					// markers: true,
+					onEnter: () => splide.Components.AutoScroll.play(),
+					onLeave: () => splide.Components.AutoScroll.pause(),
+					onEnterBack: () => splide.Components.AutoScroll.play(),
+					onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				});
+
 				splide.mount(window.splide.Extensions);
 
 				// distinct.helpers.splide_progress(splide); /* add progress bar */
