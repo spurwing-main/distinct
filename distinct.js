@@ -96,7 +96,7 @@ function distinct_anim() {
 					snap: true,
 					autoplay: false,
 					pauseOnHover: false,
-					interval: 10000,
+					// interval: 10000,
 					arrows: true,
 					breakpoints: {
 						767: { perPage: 1 },
