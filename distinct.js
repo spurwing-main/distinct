@@ -115,15 +115,15 @@ function distinct_anim() {
 				};
 
 				// Conditionally add autoScroll options if not on mobile
-				// if (!isMobile) {
-				// 	splideOptions.autoScroll = {
-				// 		autoStart: true,
-				// 		pauseOnHover: false,
-				// 		pauseOnFocus: false,
-				// 		rewind: false,
-				// 		speed: 1,
-				// 	};
-				// }
+				if (!isMobile) {
+					splideOptions.autoScroll = {
+						autoStart: true,
+						pauseOnHover: false,
+						pauseOnFocus: false,
+						rewind: false,
+						speed: 1,
+					};
+				}
 
 				let splide = new Splide(splides[i], splideOptions);
 
@@ -148,43 +148,6 @@ function distinct_anim() {
 				// distinct.helpers.splide_progress(splide); /* add progress bar */
 				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
 			}
-
-			function adjustAutoScrollOnResize(splideInstances) {
-				const mobileWidthThreshold = 767; // Define mobile width threshold
-
-				function checkAndAdjustAutoScroll() {
-					const isMobileSize = window.innerWidth <= mobileWidthThreshold;
-
-					splideInstances.forEach((splideInstance) => {
-						if (isMobileSize) {
-							// Pause auto-scroll on mobile size
-							if (splideInstance.Components.AutoScroll) {
-								splideInstance.Components.AutoScroll.pause();
-							}
-						} else {
-							// Resume auto-scroll if not on mobile size and autoScroll was initially set
-							if (
-								splideInstance.options.autoScroll &&
-								splideInstance.Components.AutoScroll
-							) {
-								splideInstance.Components.AutoScroll.play();
-							}
-						}
-					});
-				}
-
-				// Listen for resize events
-				window.addEventListener("resize", checkAndAdjustAutoScroll);
-
-				// Initial check in case the user starts at mobile size or resizes before any interaction
-				checkAndAdjustAutoScroll();
-			}
-
-			adjustAutoScrollOnResize(splides);
-
-			// Example usage
-			// Assuming your Splide instances are stored in an array called `mySplideInstances`
-			// adjustAutoScrollOnResize(mySplideInstances);
 		};
 
 		/* sustainability approach */
