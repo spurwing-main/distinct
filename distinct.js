@@ -79,6 +79,7 @@ function distinct_anim() {
 			if (!document.querySelector(myClass)) return;
 
 			let splides = document.querySelectorAll(myClass);
+
 			for (let i = 0; i < splides.length; i++) {
 				const isMobile = window.innerWidth <= 767;
 
@@ -104,19 +105,25 @@ function distinct_anim() {
 						767: { perPage: 1 },
 						1200: { perPage: 2 },
 					},
-				};
-
-				// Conditionally add autoScroll options if not on mobile
-				if (!isMobile) {
-					alert("not mobile");
-					splideOptions.autoScroll = {
-						autoStart: true,
+					autoScroll: {
+						autoStart: false,
 						pauseOnHover: false,
 						pauseOnFocus: false,
 						rewind: false,
 						speed: 1,
-					};
-				}
+					},
+				};
+
+				// Conditionally add autoScroll options if not on mobile
+				// if (!isMobile) {
+				// 	splideOptions.autoScroll = {
+				// 		autoStart: true,
+				// 		pauseOnHover: false,
+				// 		pauseOnFocus: false,
+				// 		rewind: false,
+				// 		speed: 1,
+				// 	};
+				// }
 
 				let splide = new Splide(splides[i], splideOptions);
 
@@ -141,6 +148,43 @@ function distinct_anim() {
 				// distinct.helpers.splide_progress(splide); /* add progress bar */
 				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
 			}
+
+			function adjustAutoScrollOnResize(splideInstances) {
+				const mobileWidthThreshold = 767; // Define mobile width threshold
+
+				function checkAndAdjustAutoScroll() {
+					const isMobileSize = window.innerWidth <= mobileWidthThreshold;
+
+					splideInstances.forEach((splideInstance) => {
+						if (isMobileSize) {
+							// Pause auto-scroll on mobile size
+							if (splideInstance.Components.AutoScroll) {
+								splideInstance.Components.AutoScroll.pause();
+							}
+						} else {
+							// Resume auto-scroll if not on mobile size and autoScroll was initially set
+							if (
+								splideInstance.options.autoScroll &&
+								splideInstance.Components.AutoScroll
+							) {
+								splideInstance.Components.AutoScroll.play();
+							}
+						}
+					});
+				}
+
+				// Listen for resize events
+				window.addEventListener("resize", checkAndAdjustAutoScroll);
+
+				// Initial check in case the user starts at mobile size or resizes before any interaction
+				checkAndAdjustAutoScroll();
+			}
+
+			adjustAutoScrollOnResize(splides);
+
+			// Example usage
+			// Assuming your Splide instances are stored in an array called `mySplideInstances`
+			// adjustAutoScrollOnResize(mySplideInstances);
 		};
 
 		/* sustainability approach */
