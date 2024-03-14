@@ -108,6 +108,7 @@ function distinct_anim() {
 
 				// Conditionally add autoScroll options if not on mobile
 				if (!isMobile) {
+					alert("not mobile");
 					splideOptions.autoScroll = {
 						autoStart: true,
 						pauseOnHover: false,
