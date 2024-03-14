@@ -94,7 +94,19 @@ function distinct_anim() {
 					type: "loop",
 					drag: true,
 					snap: true,
-					autoplay: false,
+					autoplay: "pause",
+					intersection: {
+						inView: {
+							autoScroll: {
+								autoStart: true,
+							},
+						},
+						outView: {
+							autoScroll: {
+								autoStart: false,
+							},
+						},
+					},
 					pauseOnHover: false,
 					// interval: 10000,
 					arrows: true,
@@ -102,15 +114,13 @@ function distinct_anim() {
 						767: {
 							perPage: 1,
 							autoScroll: {
-								// on mobile don't autoscroll, just auto advance
-								autoStart: true,
+								autoStart: false,
 							},
 							autoplay: true,
 						},
 						1200: { perPage: 2 },
 					},
 					autoScroll: {
-						autoStart: true,
 						pauseOnHover: false,
 						pauseOnFocus: false,
 						rewind: false,
@@ -123,16 +133,16 @@ function distinct_anim() {
 				});
 
 				/* gsap scroll trigger to pause when out of viewport */
-				ScrollTrigger.create({
-					trigger: ".s-home-services",
-					start: "top bottom",
-					end: "bottom top",
-					// markers: true,
-					onEnter: () => splide.Components.AutoScroll.play(),
-					onLeave: () => splide.Components.AutoScroll.pause(),
-					onEnterBack: () => splide.Components.AutoScroll.play(),
-					onLeaveBack: () => splide.Components.AutoScroll.pause(),
-				});
+				// ScrollTrigger.create({
+				// 	trigger: ".s-home-services",
+				// 	start: "top bottom",
+				// 	end: "bottom top",
+				// 	// markers: true,
+				// 	onEnter: () => splide.Components.AutoScroll.play(),
+				// 	onLeave: () => splide.Components.AutoScroll.pause(),
+				// 	onEnterBack: () => splide.Components.AutoScroll.play(),
+				// 	onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				// });
 
 				splide.mount(window.splide.Extensions);
 
