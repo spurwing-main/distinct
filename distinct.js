@@ -89,8 +89,8 @@ function distinct_anim() {
 					perPage: 3,
 					rewindSpeed: 400,
 					waitForTransition: false,
-					updateOnMove: true,
-					trimSpace: "move",
+					// updateOnMove: true,
+					// trimSpace: "move",
 					type: "loop",
 					drag: true,
 					snap: true,
@@ -112,7 +112,7 @@ function distinct_anim() {
 				});
 
 				splide.on("mounted", function () {
-					Webflow.require("ix2").init();
+					// Webflow.require("ix2").init();
 				});
 				splide.mount(window.splide.Extensions);
 
