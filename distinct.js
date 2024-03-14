@@ -116,8 +116,8 @@ function distinct_anim() {
 				});
 				splide.mount(window.splide.Extensions);
 
-				distinct.helpers.splide_progress(splide); /* add progress bar */
-				distinct.helpers.splide_hover_pause(splide); //pause on hover on track
+				// distinct.helpers.splide_progress(splide); /* add progress bar */
+				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
 			}
 		};
 
