@@ -448,21 +448,53 @@ function distinct_anim() {
 						gsap.set(".anim-slide-text", { autoAlpha: 1 });
 						// ScrollTrigger.refresh();
 
-						let tl_split = gsap.timeline();
+						var arrowEls = prepArrows(target);
+						if (arrowEls) {
+							var arrow = arrowEls[0];
+							var outerLine = arrowEls[1];
+							var innerLine = arrowEls[2];
+							var arrowWidth = arrow.offsetWidth + 10;
+						}
 
-						tl_split.to(first_split.lines, {
-							duration: 1,
-							y: "0%",
-							ease: "power2.out",
-							stagger: 0.1,
-							scrollTrigger: {
-								trigger: target,
-								start: "top 80%",
-								end: "bottom 70%",
-								scrub: true,
-							},
-							onComplete: () => {},
-						});
+						gsap
+							.timeline({
+								scrollTrigger: {
+									trigger: target,
+									start: "top 80%",
+									end: "bottom 50%",
+									scrub: true,
+								},
+							})
+							.to(first_split.lines, {
+								y: "0%",
+								ease: "power2.out",
+								stagger: 0.1,
+							})
+							.to(innerLine, { x: arrowWidth })
+							.to(arrow, { x: 0 }, "<");
+
+						// tl_split.to(first_split.lines, {
+						// 	// duration: 1,
+						// 	y: "0%",
+						// 	ease: "power2.out",
+						// 	stagger: 0.1,
+						// 	scrollTrigger: {
+						// 		trigger: target,
+						// 		start: "top 80%",
+						// 		end: "bottom 70%",
+						// 		scrub: true,
+						// 	},
+						// 	// onComplete: () => {
+						// 	// 	if (arrowEls) {
+						// 	// 		var arrowWidth = arrow.offsetWidth + 10;
+						// 	// 		gsap.to(innerLine, { x: arrowWidth });
+						// 	// 		gsap.to(arrow, { x: 0 });
+						// 	// 	}
+						// 	// },
+						// });
+
+						// tl_split.to(innerLine, { x: arrowWidth });
+						// tl_split.to(arrow, { x: 0 });
 					});
 				}
 
@@ -499,6 +531,30 @@ function distinct_anim() {
 					});
 				}
 				setupSplits_instant();
+
+				function prepArrows(target) {
+					var indentedAncestor = target.closest(".indent");
+					if (indentedAncestor) {
+						//if target is indented
+						var arrow = indentedAncestor.querySelector(".indent_arrow"); // arrow to move
+						var outerLine = target.querySelector(
+							".split-line-outer:first-of-type "
+						); // line to move arrow to
+						var innerLine = outerLine.querySelector(
+							".split-line-inner:first-of-type "
+						);
+						outerLine.prepend(arrow); // move arrow
+						gsap.set(outerLine, {
+							display: "flex",
+							"flex-direction": "row",
+							position: "relative",
+						});
+
+						gsap.set(arrow, { position: "absolute", x: "-100%" });
+
+						return [arrow, outerLine, innerLine];
+					}
+				}
 			});
 		};
 
