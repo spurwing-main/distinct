@@ -424,18 +424,17 @@ function distinct_anim() {
 		};
 
 		distinct.anim.slideText_v2 = function () {
-			/* Function */
-			gsap.registerPlugin(ScrollTrigger, SplitText);
-			return;
-
 			document.fonts.ready.then(function () {
-				console.log("ready");
-				// we have to wait for custom fonts to load first
+				// try waiting for custom fonts to load first
 
 				/* --- Split the text, Client Title --- */
 				function setupSplits() {
-					const targets = gsap.utils.toArray(".anim-slide-text");
+					const targets = gsap.utils.toArray(
+						".anim-slide-text:not(.w-richtext), .anim-slide-text.w-richtext :is(h1, h2, h3, h4)"
+					); // NB rich text elements don't work the same - need to target the relevant children instead
 					targets.forEach((target) => {
+						/* set custom fonts to default for splitting purposes */
+
 						let first_split = new SplitText(target, {
 							type: "lines",
 							linesClass: "split-line-inner",
@@ -445,45 +444,61 @@ function distinct_anim() {
 							type: "lines",
 							linesClass: "split-line-outer",
 						});
+						gsap.set(first_split.lines, { y: "100%" });
+						gsap.set(".anim-slide-text", { autoAlpha: 1 });
+						// ScrollTrigger.refresh();
 
 						let tl_split = gsap.timeline();
 
-						// function kill() {
-						// 	tl_split.clear().time(0);
-						// 	split.revert();
-						// }
-
-						// kill();
-
-						// parent_split.split({
-						// 	type: "lines",
-						// 	linesClass: "split-line-wrap-3",
-						// });
-
-						tl_split.from(first_split.lines, {
+						tl_split.to(first_split.lines, {
 							duration: 1,
-							// opacity: 0,
-							y: "100%",
-							// ease: "none",
-							stagger: 0.2,
+							y: "0%",
+							ease: "power2.out",
+							stagger: 0.1,
 							scrollTrigger: {
 								trigger: target,
-								// markers: true,
 								start: "top 80%",
-								// toggleActions: "restart pause resume reverse",
-								// end: "bottom center",
-								// scrub: true,
+								end: "bottom 70%",
+								scrub: true,
 							},
-							onComplete: () => {
-								// first_split.revert();
-								// second_split.revert();
-								// child_split.revert();
-							},
+							onComplete: () => {},
 						});
 					});
 				}
 
 				setupSplits();
+
+				/* --- Split the text, Client Title --- */
+				function setupSplits_instant() {
+					const targets = gsap.utils.toArray(
+						".anim-slide-text-instant:not(.w-richtext), .anim-slide-text-instant.w-richtext :is(h1, h2, h3, h4)"
+					); // NB rich text elements don't work the same - need to target the relevant children instead
+					targets.forEach((target) => {
+						/* set custom fonts to default for splitting purposes */
+
+						let first_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-inner",
+						});
+
+						let second_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-outer",
+						});
+						gsap.set(first_split.lines, { y: "100%" });
+						gsap.set(".anim-slide-text-instant", { autoAlpha: 1 });
+
+						let tl_split = gsap.timeline();
+
+						tl_split.to(first_split.lines, {
+							duration: 1,
+							y: "0%",
+							ease: "power2.out",
+							stagger: 0.1,
+						});
+					});
+				}
+				setupSplits_instant();
 			});
 		};
 
@@ -1925,23 +1940,23 @@ Features:
 	window.scrollBy(0, 2);
 	window.scrollBy(0, -2);
 
-	// try {
-	// 	distinct.anim.headerBg();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.headerBg():", error);
-	// }
+	try {
+		distinct.anim.headerBg();
+	} catch (error) {
+		console.error("Error executing distinct.anim.headerBg():", error);
+	}
 
-	// try {
-	// 	distinct.anim.updateDates();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.updateDates():", error);
-	// }
+	try {
+		distinct.anim.updateDates();
+	} catch (error) {
+		console.error("Error executing distinct.anim.updateDates():", error);
+	}
 
-	// try {
-	// 	distinct.anim.updateDates_watch();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.updateDates_watch():", error);
-	// }
+	try {
+		distinct.anim.updateDates_watch();
+	} catch (error) {
+		console.error("Error executing distinct.anim.updateDates_watch():", error);
+	}
 
 	try {
 		distinct.anim.splide_home_services();
@@ -1952,103 +1967,107 @@ Features:
 		);
 	}
 
-	// try {
-	// 	distinct.anim.splide_sustainability_approach();
-	// } catch (error) {
-	// 	console.error(
-	// 		"Error executing distinct.anim.splide_sustainability_approach():",
-	// 		error
-	// 	);
-	// }
+	try {
+		distinct.anim.splide_sustainability_approach();
+	} catch (error) {
+		console.error(
+			"Error executing distinct.anim.splide_sustainability_approach():",
+			error
+		);
+	}
 
-	// try {
-	// 	distinct.anim.splide_home_testimonials();
-	// } catch (error) {
-	// 	console.error(
-	// 		"Error executing distinct.anim.splide_home_testimonials():",
-	// 		error
-	// 	);
-	// }
+	try {
+		distinct.anim.splide_home_testimonials();
+	} catch (error) {
+		console.error(
+			"Error executing distinct.anim.splide_home_testimonials():",
+			error
+		);
+	}
 
-	// try {
-	// 	distinct.anim.splide_about_ethos();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_about_ethos():", error);
-	// }
+	try {
+		distinct.anim.splide_about_ethos();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_about_ethos():", error);
+	}
 
-	// try {
-	// 	distinct.anim.splide_home_hero();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_home_hero():", error);
-	// }
+	try {
+		distinct.anim.splide_home_hero();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_home_hero():", error);
+	}
 
-	// try {
-	// 	distinct.anim.splitText();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splitText():", error);
-	// }
+	try {
+		distinct.anim.splitText();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splitText():", error);
+	}
 
-	// // distinct.anim.slideText_v2();
+	try {
+		distinct.anim.slideText_v2();
+	} catch (error) {
+		console.error("Error executing distinct.anim.slideText_v2:", error);
+	}
 
-	// try {
-	// 	distinct.anim.brandScroll();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.brandScroll():", error);
-	// }
+	try {
+		distinct.anim.brandScroll();
+	} catch (error) {
+		console.error("Error executing distinct.anim.brandScroll():", error);
+	}
 
-	// try {
-	// 	distinct.anim.flexccordion();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.flexccordion():", error);
-	// }
+	try {
+		distinct.anim.flexccordion();
+	} catch (error) {
+		console.error("Error executing distinct.anim.flexccordion():", error);
+	}
 
-	// try {
-	// 	distinct.anim.featuresTab();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.featuresTab():", error);
-	// }
+	try {
+		distinct.anim.featuresTab();
+	} catch (error) {
+		console.error("Error executing distinct.anim.featuresTab():", error);
+	}
 
-	// try {
-	// 	distinct.anim.collabs();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.collabs():", error);
-	// }
+	try {
+		distinct.anim.collabs();
+	} catch (error) {
+		console.error("Error executing distinct.anim.collabs():", error);
+	}
 
-	// try {
-	// 	distinct.anim.accordion();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.accordion():", error);
-	// }
+	try {
+		distinct.anim.accordion();
+	} catch (error) {
+		console.error("Error executing distinct.anim.accordion():", error);
+	}
 
-	// try {
-	// 	distinct.anim.navImages();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.navImages():", error);
-	// }
+	try {
+		distinct.anim.navImages();
+	} catch (error) {
+		console.error("Error executing distinct.anim.navImages():", error);
+	}
 
-	// try {
-	// 	distinct.anim.parallax();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.parallax():", error);
-	// }
+	try {
+		distinct.anim.parallax();
+	} catch (error) {
+		console.error("Error executing distinct.anim.parallax():", error);
+	}
 
-	// try {
-	// 	distinct.anim.slider_caseStudies();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.slider_caseStudies():", error);
-	// }
+	try {
+		distinct.anim.slider_caseStudies();
+	} catch (error) {
+		console.error("Error executing distinct.anim.slider_caseStudies():", error);
+	}
 
-	// try {
-	// 	distinct.anim.splitSliders();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splitSliders():", error);
-	// }
+	try {
+		distinct.anim.splitSliders();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splitSliders():", error);
+	}
 
-	// try {
-	// 	distinct.anim.whyDistinct();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.whyDistinct():", error);
-	// }
+	try {
+		distinct.anim.whyDistinct();
+	} catch (error) {
+		console.error("Error executing distinct.anim.whyDistinct():", error);
+	}
 }
 
 // // wait until DOM is ready
