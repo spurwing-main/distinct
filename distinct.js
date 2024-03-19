@@ -433,6 +433,8 @@ function distinct_anim() {
 						".anim-slide-text:not(.w-richtext), .anim-slide-text.w-richtext :is(h1, h2, h3, h4)"
 					); // NB rich text elements don't work the same - need to target the relevant children instead
 					targets.forEach((target) => {
+						let targetSelector = gsap.utils.selector(target); // get a selector fn we can use at the end
+
 						/* set custom fonts to default for splitting purposes */
 
 						let first_split = new SplitText(target, {
@@ -470,8 +472,16 @@ function distinct_anim() {
 								ease: "power2.out",
 								stagger: 0.1,
 							})
+							.addLabel("slideDone", ">")
 							.to(innerLine, { x: arrowWidth })
-							.to(arrow, { x: 0 }, "<");
+							.to(arrow, { x: 0 }, "<")
+							.set(
+								targetSelector(".split-line-outer"),
+								{
+									"overflow-y": "visible",
+								},
+								"slideDone"
+							); // when anim done, get the ...-outer elements within this target and turn off the overflow, to avoid any clipping issues
 
 						// tl_split.to(first_split.lines, {
 						// 	// duration: 1,
