@@ -461,8 +461,8 @@ function distinct_anim() {
 								scrollTrigger: {
 									trigger: target,
 									start: "top 80%",
-									end: "bottom 50%",
-									scrub: true,
+									// end: "bottom 50%",
+									// scrub: true,
 								},
 							})
 							.to(first_split.lines, {
