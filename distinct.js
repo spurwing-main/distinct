@@ -2075,11 +2075,11 @@ Features:
 		console.error("Error executing distinct.anim.slideText_v2:", error);
 	}
 
-	try {
-		distinct.anim.brandScroll();
-	} catch (error) {
-		console.error("Error executing distinct.anim.brandScroll():", error);
-	}
+	// try {
+	// 	distinct.anim.brandScroll();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.brandScroll():", error);
+	// }
 
 	try {
 		distinct.anim.flexccordion();
