@@ -123,27 +123,27 @@ function distinct_anim() {
 				distinct.splides.home_services.push(splide); // add this splide to distinct obj so we can access it in devtools
 
 				// pause slider when out of view, and on mob
-				let mm = gsap.matchMedia();
-				mm.add("(min-width: 768px)", () => {
-					/* gsap scroll trigger to pause when out of viewport */
-					ScrollTrigger.create({
-						trigger: ".s-home-services",
-						start: "top bottom",
-						end: "bottom top",
-						onEnter: () => splide.Components.AutoScroll.play(),
-						onLeave: () => splide.Components.AutoScroll.pause(),
-						onEnterBack: () => splide.Components.AutoScroll.play(),
-						onLeaveBack: () => splide.Components.AutoScroll.pause(),
-					});
+				// let mm = gsap.matchMedia();
+				// mm.add("(min-width: 768px)", () => {
+				// 	/* gsap scroll trigger to pause when out of viewport */
+				ScrollTrigger.create({
+					trigger: ".s-home-services",
+					start: "top bottom",
+					end: "bottom top",
+					onEnter: () => splide.Components.AutoScroll.play(),
+					onLeave: () => splide.Components.AutoScroll.pause(),
+					onEnterBack: () => splide.Components.AutoScroll.play(),
+					onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				});
 
-					return () => {
-						// custom cleanup code here (runs when it STOPS matching)
-						splide.Components.AutoScroll.pause();
-					};
-				});
-				mm.add("(max-width: 767px)", () => {
-					splide.Components.AutoScroll.pause();
-				});
+				// 	return () => {
+				// 		// custom cleanup code here (runs when it STOPS matching)
+				// 		splide.Components.AutoScroll.pause();
+				// 	};
+				// });
+				// mm.add("(max-width: 767px)", () => {
+				// 	splide.Components.AutoScroll.pause();
+				// });
 
 				/* add progress bar */
 				distinct.helpers.splide_progress(splide);
