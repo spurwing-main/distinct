@@ -802,6 +802,7 @@ function distinct_anim() {
 			});
 		};
 
+		/* DEPRECATED - now using CSS anims */
 		distinct.anim.brandScroll = function () {
 			if (!document.querySelector(".brands_list-item")) return;
 
@@ -1999,6 +2000,30 @@ Features:
 				});
 			});
 		};
+
+		distinct.anim.brandScroll_v2 = function () {
+			/* when brand scroll section not in viewport, stop scrolling */
+
+			// Define your animation with GSAP
+			const brandsAnimation = gsap.to(".brands_list", {
+				y: "-100%", // Equivalent to translateY(-100%)
+				ease: "none",
+				duration: 10,
+				paused: true, // Start paused so you can control playback with ScrollTrigger
+				repeat: -1, // Infinite loop
+			});
+
+			// Create a ScrollTrigger instance for the .brands_list
+			ScrollTrigger.create({
+				trigger: ".home-brands",
+				start: "top bottom", // Start the trigger when the top of '.brands_list' enters the bottom of the viewport
+				end: "bottom top", // End the trigger when the bottom of '.brands_list' exits the top of the viewport
+				onEnter: () => brandsAnimation.play(), // Play animation when entering the viewport
+				onLeave: () => brandsAnimation.pause(), // Pause animation when leaving the viewport
+				onEnterBack: () => brandsAnimation.play(), // Also play animation when entering the viewport from the bottom
+				onLeaveBack: () => brandsAnimation.pause(), // Also pause animation when leaving the viewport to the bottom
+			});
+		};
 	}
 
 	anim_set_up();
@@ -2075,11 +2100,11 @@ Features:
 		console.error("Error executing distinct.anim.slideText_v2:", error);
 	}
 
-	// try {
-	// 	distinct.anim.brandScroll();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.brandScroll():", error);
-	// }
+	try {
+		distinct.anim.brandScroll_v2();
+	} catch (error) {
+		console.error("Error executing distinct.anim.brandScroll():", error);
+	}
 
 	try {
 		distinct.anim.flexccordion();
