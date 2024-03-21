@@ -2,6 +2,7 @@
 const distinct = {};
 distinct.anim = {};
 distinct.helpers = {};
+distinct.splides = {};
 
 function distinct_anim() {
 	// create all the anim functions
@@ -76,13 +77,11 @@ function distinct_anim() {
 		distinct.anim.splide_home_services = function (
 			myClass = ".splide.is-home-services"
 		) {
-			if (!document.querySelector(myClass)) return;
+			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
 			let splides = document.querySelectorAll(myClass);
-
+			distinct.splides.home_services = [];
 			for (let i = 0; i < splides.length; i++) {
-				const isMobile = window.innerWidth <= 767;
-
 				let splideOptions = {
 					perMove: 1,
 					gap: "1rem",
@@ -106,7 +105,7 @@ function distinct_anim() {
 						1200: { perPage: 2 },
 					},
 					autoScroll: {
-						autoStart: false,
+						autoStart: true,
 						pauseOnHover: false,
 						pauseOnFocus: false,
 						rewind: false,
@@ -114,38 +113,41 @@ function distinct_anim() {
 					},
 				};
 
-				// Conditionally add autoScroll options if not on mobile
-				if (!isMobile) {
-					splideOptions.autoScroll = {
-						autoStart: true,
-						pauseOnHover: false,
-						pauseOnFocus: false,
-						rewind: false,
-						speed: 1,
-					};
-				}
-
-				let splide = new Splide(splides[i], splideOptions);
+				let splide = new Splide(splides[i], splideOptions); // create splide instance with these options
 
 				splide.on("mounted", function () {
-					Webflow.require("ix2").init();
+					Webflow.require("ix2").init(); // relaunch WF interactions for card anims
 				});
 
-				// /* gsap scroll trigger to pause when out of viewport */
-				// ScrollTrigger.create({
-				// 	trigger: ".s-home-services",
-				// 	start: "top bottom",
-				// 	end: "bottom top",
-				// 	// markers: true,
-				// 	onEnter: () => splideOptions.AutoScroll.play(),
-				// 	onLeave: () => splideOptions.AutoScroll.pause(),
-				// 	onEnterBack: () => splideOptions.AutoScroll.play(),
-				// 	onLeaveBack: () => splideOptions.AutoScroll.pause(),
-				// });
+				splide.mount(window.splide.Extensions); // add splide to page along with extensions
 
-				splide.mount(window.splide.Extensions);
+				distinct.splides.home_services.push(splide); // add this splide to distinct obj so we can access it in devtools
 
-				// distinct.helpers.splide_progress(splide); /* add progress bar */
+				// pause slider when out of view, and on mob
+				let mm = gsap.matchMedia();
+				mm.add("(min-width: 768px)", () => {
+					/* gsap scroll trigger to pause when out of viewport */
+					ScrollTrigger.create({
+						trigger: ".s-home-services",
+						start: "top bottom",
+						end: "bottom top",
+						onEnter: () => splide.Components.AutoScroll.play(),
+						onLeave: () => splide.Components.AutoScroll.pause(),
+						onEnterBack: () => splide.Components.AutoScroll.play(),
+						onLeaveBack: () => splide.Components.AutoScroll.pause(),
+					});
+
+					return () => {
+						// custom cleanup code here (runs when it STOPS matching)
+						splide.Components.AutoScroll.pause();
+					};
+				});
+				mm.add("(max-width: 767px)", () => {
+					splide.Components.AutoScroll.pause();
+				});
+
+				/* add progress bar */
+				distinct.helpers.splide_progress(splide);
 				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
 			}
 		};
@@ -2103,7 +2105,7 @@ Features:
 	try {
 		distinct.anim.brandScroll_v2();
 	} catch (error) {
-		console.error("Error executing distinct.anim.brandScroll():", error);
+		console.error("Error executing distinct.anim.brandScroll_v2():", error);
 	}
 
 	try {
