@@ -2,6 +2,7 @@
 const distinct = {};
 distinct.anim = {};
 distinct.helpers = {};
+distinct.splides = {};
 
 function distinct_anim() {
 	// create all the anim functions
@@ -12,8 +13,7 @@ function distinct_anim() {
 		/* GSAP */
 		gsap.registerPlugin(ScrollTrigger);
 		gsap.registerPlugin(SplitText);
-		gsap.registerPlugin(Draggable);
-		gsap.registerPlugin(InertiaPlugin);
+
 		gsap.registerPlugin(Flip);
 
 		gsap.defaults({
@@ -76,11 +76,12 @@ function distinct_anim() {
 		distinct.anim.splide_home_services = function (
 			myClass = ".splide.is-home-services"
 		) {
-			if (!document.querySelector(myClass)) return;
+			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
 			let splides = document.querySelectorAll(myClass);
+			distinct.splides.home_services = [];
 			for (let i = 0; i < splides.length; i++) {
-				let splide = new Splide(splides[i], {
+				let splideOptions = {
 					perMove: 1,
 					gap: "1rem",
 					focus: 0,
@@ -109,15 +110,44 @@ function distinct_anim() {
 						rewind: false,
 						speed: 1,
 					},
-				});
+				};
+
+				let splide = new Splide(splides[i], splideOptions); // create splide instance with these options
 
 				splide.on("mounted", function () {
-					Webflow.require("ix2").init();
+					Webflow.require("ix2").init(); // relaunch WF interactions for card anims
 				});
-				splide.mount(window.splide.Extensions);
 
-				distinct.helpers.splide_progress(splide); /* add progress bar */
-				distinct.helpers.splide_hover_pause(splide); //pause on hover on track
+				splide.mount(window.splide.Extensions); // add splide to page along with extensions
+
+				distinct.splides.home_services.push(splide); // add this splide to distinct obj so we can access it in devtools
+
+				// pause slider when out of view, and on mob
+				// let mm = gsap.matchMedia();
+				// mm.add("(min-width: 768px)", () => {
+				// 	/* gsap scroll trigger to pause when out of viewport */
+				ScrollTrigger.create({
+					trigger: ".s-home-services",
+					start: "top bottom",
+					end: "bottom top",
+					onEnter: () => splide.Components.AutoScroll.play(),
+					onLeave: () => splide.Components.AutoScroll.pause(),
+					onEnterBack: () => splide.Components.AutoScroll.play(),
+					onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				});
+
+				// 	return () => {
+				// 		// custom cleanup code here (runs when it STOPS matching)
+				// 		splide.Components.AutoScroll.pause();
+				// 	};
+				// });
+				// mm.add("(max-width: 767px)", () => {
+				// 	splide.Components.AutoScroll.pause();
+				// });
+
+				/* add progress bar */
+				distinct.helpers.splide_progress(splide);
+				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
 			}
 		};
 
@@ -350,48 +380,149 @@ function distinct_anim() {
 			setupSplits();
 		};
 
-		/* slide text */
-		distinct.anim.slideText = function () {
-			if (!document.querySelector(".anim-slide-text")) return;
+		distinct.anim.slideText_v2 = function () {
+			document.fonts.ready.then(function () {
+				// try waiting for custom fonts to load first
 
-			const splitTexts = document.querySelectorAll(".anim-slide-text");
+				/* --- Split the text, Client Title --- */
+				function setupSplits() {
+					const targets = gsap.utils.toArray(
+						".anim-slide-text:not(.w-richtext), .anim-slide-text.w-richtext :is(h1, h2, h3, h4)"
+					); // NB rich text elements don't work the same - need to target the relevant children instead
+					targets.forEach((target) => {
+						let targetSelector = gsap.utils.selector(target); // get a selector fn we can use at the end
 
-			function setupSlides() {
-				splitTexts.forEach((text) => {
-					// Reset if needed
-					// if (text.lines[0].anim) {
-					// 	text.anim.progress(1).kill();
-					// 	text.lines.revert();
-					// }
+						/* set custom fonts to default for splitting purposes */
 
-					text.split = new SplitText(text, {
-						type: "lines",
-						linesClass: "slide-line",
+						let first_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-inner",
+						});
+
+						let second_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-outer",
+						});
+						gsap.set(first_split.lines, { y: "100%" });
+						gsap.set(".anim-slide-text", { autoAlpha: 1 });
+						// ScrollTrigger.refresh();
+
+						var arrowEls = prepArrows(target);
+						if (arrowEls) {
+							var arrow = arrowEls[0];
+							var outerLine = arrowEls[1];
+							var innerLine = arrowEls[2];
+							var arrowWidth = arrow.offsetWidth + 10;
+						}
+
+						gsap
+							.timeline({
+								scrollTrigger: {
+									trigger: target,
+									start: "top 80%",
+									// end: "bottom 50%",
+									// scrub: true,
+								},
+							})
+							.to(first_split.lines, {
+								y: "0%",
+								ease: "power2.out",
+								stagger: 0.1,
+							})
+							.addLabel("slideDone", ">")
+							.to(innerLine, { x: arrowWidth })
+							.to(arrow, { x: 0 }, "<")
+							.set(
+								targetSelector(".split-line-outer"),
+								{
+									"overflow-y": "visible",
+								},
+								"slideDone"
+							); // when anim done, get the ...-outer elements within this target and turn off the overflow, to avoid any clipping issues
+
+						// tl_split.to(first_split.lines, {
+						// 	// duration: 1,
+						// 	y: "0%",
+						// 	ease: "power2.out",
+						// 	stagger: 0.1,
+						// 	scrollTrigger: {
+						// 		trigger: target,
+						// 		start: "top 80%",
+						// 		end: "bottom 70%",
+						// 		scrub: true,
+						// 	},
+						// 	// onComplete: () => {
+						// 	// 	if (arrowEls) {
+						// 	// 		var arrowWidth = arrow.offsetWidth + 10;
+						// 	// 		gsap.to(innerLine, { x: arrowWidth });
+						// 	// 		gsap.to(arrow, { x: 0 });
+						// 	// 	}
+						// 	// },
+						// });
+
+						// tl_split.to(innerLine, { x: arrowWidth });
+						// tl_split.to(arrow, { x: 0 });
 					});
+				}
 
-					text.parent = new SplitText(text, {
-						linesClass: "slide-line-parent",
+				setupSplits();
+
+				/* --- Split the text, Client Title --- */
+				function setupSplits_instant() {
+					const targets = gsap.utils.toArray(
+						".anim-slide-text-instant:not(.w-richtext), .anim-slide-text-instant.w-richtext :is(h1, h2, h3, h4)"
+					); // NB rich text elements don't work the same - need to target the relevant children instead
+					targets.forEach((target) => {
+						/* set custom fonts to default for splitting purposes */
+
+						let first_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-inner",
+						});
+
+						let second_split = new SplitText(target, {
+							type: "lines",
+							linesClass: "split-line-outer",
+						});
+						gsap.set(first_split.lines, { y: "100%" });
+						gsap.set(".anim-slide-text-instant", { autoAlpha: 1 });
+
+						let tl_split = gsap.timeline();
+
+						tl_split.to(first_split.lines, {
+							duration: 1,
+							y: "0%",
+							ease: "power2.out",
+							stagger: 0.1,
+						});
 					});
+				}
+				setupSplits_instant();
 
-					// text.anim = [];
+				function prepArrows(target) {
+					var indentedAncestor = target.closest(".indent");
+					if (indentedAncestor) {
+						//if target is indented
+						var arrow = indentedAncestor.querySelector(".indent_arrow"); // arrow to move
+						var outerLine = target.querySelector(
+							".split-line-outer:first-of-type "
+						); // line to move arrow to
+						var innerLine = outerLine.querySelector(
+							".split-line-inner:first-of-type "
+						);
+						outerLine.prepend(arrow); // move arrow
+						gsap.set(outerLine, {
+							display: "flex",
+							"flex-direction": "row",
+							position: "relative",
+						});
 
-					text.anim = gsap.from(text.split.lines, {
-						ScrollTrigger: {
-							trigger: text,
-							toggleActions: "play pause resume reverse",
-							start: "top 60%",
-							end: "top 20%",
-							scrub: true,
-						},
-						ease: "circ.out",
-						y: 100,
-						stagger: 0.02,
-					});
-				});
-			}
+						gsap.set(arrow, { position: "absolute", x: "-100%" });
 
-			ScrollTrigger.addEventListener("refresh", setupSlides);
-			setupSlides();
+						return [arrow, outerLine, innerLine];
+					}
+				}
+			});
 		};
 
 		/* flexccordion */
@@ -626,300 +757,6 @@ function distinct_anim() {
 				/* play for first item */
 				// featureTitles[0].animation.play();
 			});
-		};
-
-		distinct.anim.brandScroll = function () {
-			if (!document.querySelector(".brands_list-item")) return;
-
-			const brands_loop = verticalLoop(".brands_list-item", {
-				repeat: -1,
-				paused: true,
-				center: true,
-				draggable: true,
-				inertia: true,
-				speed: 0.8,
-			});
-
-			/* add a scroll trigger to only play animation when in viewport */
-			ScrollTrigger.create({
-				trigger: ".home-brands",
-				start: "top bottom",
-				end: "bottom top",
-				// markers: true,
-				onEnter: () => brands_loop.play(),
-				onLeave: () => brands_loop.pause(),
-				onEnterBack: () => brands_loop.play(),
-				onLeaveBack: () => brands_loop.pause(),
-				// onRefresh: () => logRed("onRefresh"),
-				// onUpdate: self => redProgress.innerText = "progress: " + self.progress.toFixed(3)
-			});
-
-			// return brands_loop;
-
-			/* Helper function from GSAP https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop */
-			// use the helper function to build a seamless looping gsap.timeline() with some special properties/methods
-
-			/*
-This helper function makes a group of elements animate along the y-axis in a seamless, responsive loop.
-
-Features:
-- Uses yPercent so that even if the widths change (like if the window gets resized), it should still work in most cases.
-- When each item animates up or down enough, it will loop back to the other side
-- Optionally pass in a config object with values like draggable: true, center: true, speed (default: 1, which travels at roughly 100 pixels per second), paused (boolean), repeat, reversed, and paddingBottom.
-- The returned timeline will have the following methods added to it:
-    - next() - animates to the next element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
-    - previous() - animates to the previous element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
-    - toIndex() - pass in a zero-based index value of the element that it should animate to, and optionally pass in a vars object to control duration, easing, etc. Always goes in the shortest direction
-    - current() - returns the current index (if an animation is in-progress, it reflects the final index)
-    - times - an Array of the times on the timeline where each element hits the "starting" spot.
-    - elements - an Array of the elements that are being controlled by the timeline
-*/
-			function verticalLoop(items, config) {
-				items = gsap.utils.toArray(items);
-				config = config || {};
-				let onChange = config.onChange,
-					lastIndex = 0,
-					tl = gsap.timeline({
-						repeat: config.repeat,
-						onUpdate:
-							onChange &&
-							function () {
-								let i = tl.closestIndex();
-								if (lastIndex !== i) {
-									lastIndex = i;
-									onChange(items[i], i);
-								}
-							},
-						paused: config.paused,
-						defaults: { ease: "none" },
-						onReverseComplete: () =>
-							tl.totalTime(tl.rawTime() + tl.duration() * 100),
-					}),
-					length = items.length,
-					startY = items[0].offsetTop,
-					times = [],
-					heights = [],
-					spaceBefore = [],
-					yPercents = [],
-					curIndex = 0,
-					center = config.center,
-					clone = (obj) => {
-						let result = {},
-							p;
-						for (p in obj) {
-							result[p] = obj[p];
-						}
-						return result;
-					},
-					pixelsPerSecond = (config.speed || 1) * 100,
-					snap =
-						config.snap === false
-							? (v) => v
-							: gsap.utils.snap(config.snap || 1), // some browsers shift by a pixel to accommodate flex layouts, so for example if width is 20% the first element's width might be 242px, and the next 243px, alternating back and forth. So we snap to 5 percentage points to make things look more natural
-					timeOffset = 0,
-					container =
-						center === true
-							? items[0].parentNode
-							: gsap.utils.toArray(center)[0] || items[0].parentNode,
-					totalHeight,
-					getTotalHeight = () =>
-						items[length - 1].offsetTop +
-						(yPercents[length - 1] / 100) * heights[length - 1] -
-						startY +
-						spaceBefore[0] +
-						items[length - 1].offsetHeight *
-							gsap.getProperty(items[length - 1], "scaleY") +
-						(parseFloat(config.paddingBottom) || 0),
-					populateHeights = () => {
-						let b1 = container.getBoundingClientRect(),
-							b2;
-						items.forEach((el, i) => {
-							heights[i] = parseFloat(gsap.getProperty(el, "height", "px"));
-							yPercents[i] = snap(
-								(parseFloat(gsap.getProperty(el, "y", "px")) / heights[i]) *
-									100 +
-									gsap.getProperty(el, "yPercent")
-							);
-							b2 = el.getBoundingClientRect();
-							spaceBefore[i] = b2.top - (i ? b1.bottom : b1.top);
-							b1 = b2;
-						});
-						gsap.set(items, {
-							// convert "x" to "xPercent" to make things responsive, and populate the widths/xPercents Arrays to make lookups faster.
-							yPercent: (i) => yPercents[i],
-						});
-						totalHeight = getTotalHeight();
-					},
-					timeWrap,
-					populateOffsets = () => {
-						timeOffset = center
-							? (tl.duration() * (container.offsetWidth / 2)) / totalHeight
-							: 0;
-						center &&
-							times.forEach((t, i) => {
-								times[i] = timeWrap(
-									tl.labels["label" + i] +
-										(tl.duration() * heights[i]) / 2 / totalHeight -
-										timeOffset
-								);
-							});
-					},
-					getClosest = (values, value, wrap) => {
-						let i = values.length,
-							closest = 1e10,
-							index = 0,
-							d;
-						while (i--) {
-							d = Math.abs(values[i] - value);
-							if (d > wrap / 2) {
-								d = wrap - d;
-							}
-							if (d < closest) {
-								closest = d;
-								index = i;
-							}
-						}
-						return index;
-					},
-					populateTimeline = () => {
-						let i, item, curY, distanceToStart, distanceToLoop;
-						tl.clear();
-						for (i = 0; i < length; i++) {
-							item = items[i];
-							curY = (yPercents[i] / 100) * heights[i];
-							distanceToStart = item.offsetTop + curY - startY + spaceBefore[0];
-							distanceToLoop =
-								distanceToStart + heights[i] * gsap.getProperty(item, "scaleY");
-							tl.to(
-								item,
-								{
-									yPercent: snap(((curY - distanceToLoop) / heights[i]) * 100),
-									duration: distanceToLoop / pixelsPerSecond,
-								},
-								0
-							)
-								.fromTo(
-									item,
-									{
-										yPercent: snap(
-											((curY - distanceToLoop + totalHeight) / heights[i]) * 100
-										),
-									},
-									{
-										yPercent: yPercents[i],
-										duration:
-											(curY - distanceToLoop + totalHeight - curY) /
-											pixelsPerSecond,
-										immediateRender: false,
-									},
-									distanceToLoop / pixelsPerSecond
-								)
-								.add("label" + i, distanceToStart / pixelsPerSecond);
-							times[i] = distanceToStart / pixelsPerSecond;
-						}
-						timeWrap = gsap.utils.wrap(0, tl.duration());
-					},
-					refresh = (deep) => {
-						let progress = tl.progress();
-						tl.progress(0, true);
-						populateHeights();
-						deep && populateTimeline();
-						populateOffsets();
-						deep && tl.draggable
-							? tl.time(times[curIndex], true)
-							: tl.progress(progress, true);
-					},
-					proxy;
-				gsap.set(items, { y: 0 });
-				populateHeights();
-				populateTimeline();
-				populateOffsets();
-				window.addEventListener("resize", () => refresh(true));
-				function toIndex(index, vars) {
-					vars = clone(vars);
-					Math.abs(index - curIndex) > length / 2 &&
-						(index += index > curIndex ? -length : length); // always go in the shortest direction
-					let newIndex = gsap.utils.wrap(0, length, index),
-						time = times[newIndex];
-					if (time > tl.time() !== index > curIndex) {
-						// if we're wrapping the timeline's playhead, make the proper adjustments
-						time += tl.duration() * (index > curIndex ? 1 : -1);
-					}
-					if (vars.revolutions) {
-						time += tl.duration() * Math.round(vars.revolutions);
-						delete vars.revolutions;
-					}
-					if (time < 0 || time > tl.duration()) {
-						vars.modifiers = { time: timeWrap };
-					}
-					curIndex = newIndex;
-					vars.overwrite = true;
-					gsap.killTweensOf(proxy);
-					return tl.tweenTo(time, vars);
-				}
-				tl.elements = items;
-				tl.next = (vars) => toIndex(curIndex + 1, vars);
-				tl.previous = (vars) => toIndex(curIndex - 1, vars);
-				tl.current = () => curIndex;
-				tl.toIndex = (index, vars) => toIndex(index, vars);
-				tl.closestIndex = (setCurrent) => {
-					let index = getClosest(times, tl.time(), tl.duration());
-					setCurrent && (curIndex = index);
-					return index;
-				};
-				tl.times = times;
-				tl.progress(1, true).progress(0, true); // pre-render for performance
-				if (config.reversed) {
-					tl.vars.onReverseComplete();
-					tl.reverse();
-				}
-				if (config.draggable && typeof Draggable === "function") {
-					proxy = document.createElement("div");
-					let wrap = gsap.utils.wrap(0, 1),
-						ratio,
-						startProgress,
-						draggable,
-						dragSnap,
-						align = () =>
-							tl.progress(
-								wrap(startProgress + (draggable.startY - draggable.y) * ratio)
-							),
-						syncIndex = () => tl.closestIndex(true);
-					typeof InertiaPlugin === "undefined" &&
-						console.warn(
-							"InertiaPlugin required for momentum-based scrolling and snapping. https://greensock.com/club"
-						);
-					draggable = Draggable.create(proxy, {
-						trigger: items[0].parentNode,
-						type: "y",
-						onPressInit() {
-							gsap.killTweensOf(tl);
-							startProgress = tl.progress();
-							refresh();
-							ratio = 1 / totalHeight;
-							gsap.set(proxy, { y: startProgress / -ratio });
-						},
-						onDrag: align,
-						onThrowUpdate: align,
-						inertia: true,
-						snap: (value) => {
-							let time = -(value * ratio) * tl.duration(),
-								wrappedTime = timeWrap(time),
-								snapTime = times[getClosest(times, wrappedTime, tl.duration())],
-								dif = snapTime - wrappedTime;
-							Math.abs(dif) > tl.duration() / 2 &&
-								(dif += dif < 0 ? tl.duration() : -tl.duration());
-							return (time + dif) / tl.duration() / -ratio;
-						},
-						onRelease: syncIndex,
-						onThrowComplete: syncIndex,
-					})[0];
-					tl.draggable = draggable;
-				}
-				tl.closestIndex(true);
-				onChange && onChange(items[curIndex], curIndex);
-				return tl;
-			}
 		};
 
 		distinct.anim.collabs = function () {
@@ -1198,79 +1035,6 @@ Features:
 				);
 
 				updateProgress();
-			}
-		};
-
-		distinct.anim.accordion_v1 = function () {
-			let panels = gsap.utils.toArray(".accordion-panel");
-			let headers = gsap.utils.toArray(".accordion_header");
-			let animations = panels.map(createAnimation); //create an animation function for every panel
-
-			// add click listener
-			headers.forEach((header) => {
-				header.addEventListener("click", () => playAnim(header));
-			});
-
-			// add hover listnener
-			panels.forEach((panel) => {
-				panel.addEventListener("mouseenter", () => handlePanelHover(panel));
-				panel.addEventListener("mouseleave", () => handlePanelHover(panel));
-			});
-
-			function playAnim(selectedHeader) {
-				animations.forEach((animation) => animation(selectedHeader));
-			}
-
-			function createAnimation(element) {
-				let header = element.querySelector(".accordion_header");
-				let body = element.querySelector(".accordion_body-wrap");
-				let icon = element.querySelector(".accordion_icon");
-				let iconInner = element.querySelector(".accordion_icon-inner");
-
-				gsap.set(body, { height: "auto" });
-				gsap.set(icon, { opacity: 1 });
-				gsap.set(iconInner, {
-					rotationZ: 45,
-					transformOrigin: "50% 50%",
-				});
-
-				let animation = gsap
-					.timeline()
-					.from(body, {
-						height: 0,
-						duration: 0.35,
-					})
-					.from(icon, { duration: 0.2, opacity: 0.4 }, 0)
-					.from(iconInner, { duration: 0.2, rotationZ: 0 }, 0)
-					.reverse();
-
-				return function (selected) {
-					if (selected === header) {
-						animation.reversed(!animation.reversed());
-					} else {
-						animation.reverse();
-					}
-				};
-			}
-
-			function handlePanelHover(panel) {
-				let header = panel.querySelector(".accordion_header");
-				let icon = panel.querySelector(".accordion_icon");
-
-				if (!isPanelOpen(panel)) {
-					// Change opacity only if the panel is not open
-					gsap.to(icon, {
-						opacity: panel.classList.contains("hovered") ? 1 : 0.4,
-						duration: 0.2,
-					});
-				}
-			}
-
-			function isPanelOpen(panel) {
-				// Check if the panel is currently opened (playing the animation)
-				// You may need to adjust this depending on how the animation is controlled
-				// For simplicity, you can use a class to check if the panel is open
-				return panel.classList.contains("open");
 			}
 		};
 
@@ -1898,6 +1662,30 @@ Features:
 				});
 			});
 		};
+
+		distinct.anim.brandScroll_v2 = function () {
+			/* when brand scroll section not in viewport, stop scrolling */
+
+			// Define your animation with GSAP
+			const brandsAnimation = gsap.to(".brands_list", {
+				y: "-100%", // Equivalent to translateY(-100%)
+				ease: "none",
+				duration: 10,
+				paused: true, // Start paused so you can control playback with ScrollTrigger
+				repeat: -1, // Infinite loop
+			});
+
+			// Create a ScrollTrigger instance for the .brands_list
+			ScrollTrigger.create({
+				trigger: ".home-brands",
+				start: "top bottom", // Start the trigger when the top of '.brands_list' enters the bottom of the viewport
+				end: "bottom top", // End the trigger when the bottom of '.brands_list' exits the top of the viewport
+				onEnter: () => brandsAnimation.play(), // Play animation when entering the viewport
+				onLeave: () => brandsAnimation.pause(), // Pause animation when leaving the viewport
+				onEnterBack: () => brandsAnimation.play(), // Also play animation when entering the viewport from the bottom
+				onLeaveBack: () => brandsAnimation.pause(), // Also pause animation when leaving the viewport to the bottom
+			});
+		};
 	}
 
 	anim_set_up();
@@ -1969,9 +1757,15 @@ Features:
 	}
 
 	try {
-		distinct.anim.brandScroll();
+		distinct.anim.slideText_v2();
 	} catch (error) {
-		console.error("Error executing distinct.anim.brandScroll():", error);
+		console.error("Error executing distinct.anim.slideText_v2:", error);
+	}
+
+	try {
+		distinct.anim.brandScroll_v2();
+	} catch (error) {
+		console.error("Error executing distinct.anim.brandScroll_v2():", error);
 	}
 
 	try {
