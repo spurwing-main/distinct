@@ -473,6 +473,8 @@ function distinct_anim() {
 						".anim-slide-text-instant:not(.w-richtext), .anim-slide-text-instant.w-richtext :is(h1, h2, h3, h4)"
 					); // NB rich text elements don't work the same - need to target the relevant children instead
 					targets.forEach((target) => {
+						let targetSelector = gsap.utils.selector(target);
+
 						/* set custom fonts to default for splitting purposes */
 
 						let first_split = new SplitText(target, {
@@ -489,12 +491,21 @@ function distinct_anim() {
 
 						let tl_split = gsap.timeline();
 
-						tl_split.to(first_split.lines, {
-							duration: 1,
-							y: "0%",
-							ease: "power2.out",
-							stagger: 0.1,
-						});
+						tl_split
+							.to(first_split.lines, {
+								duration: 1,
+								y: "0%",
+								ease: "power2.out",
+								stagger: 0.1,
+							})
+							.addLabel("slideDone", ">")
+							.set(
+								targetSelector(".split-line-outer"),
+								{
+									"overflow-y": "visible",
+								},
+								"slideDone"
+							); // when anim done, get the ...-outer elements within this target and turn off the overflow, to avoid any clipping issues
 					});
 				}
 				setupSplits_instant();
