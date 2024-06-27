@@ -295,6 +295,7 @@ function distinct_anim() {
 
 				let splideOptions = {
 					perMove: 1,
+					autoWidth: true,
 					gap: "0rem",
 					focus: 0,
 					arrows: false,
@@ -312,7 +313,7 @@ function distinct_anim() {
 					interval: 10000,
 					autoScroll: {
 						autoStart: true,
-						pauseOnHover: true,
+						pauseOnHover: false,
 						pauseOnFocus: false,
 						rewind: false,
 						speed: splideSpeed,
