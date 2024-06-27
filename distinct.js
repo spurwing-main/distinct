@@ -224,8 +224,8 @@ function distinct_anim() {
 			}
 		};
 
-		/* collabs swiper */
-		distinct.anim.swiper_collabs = function (
+		/* collabs - swiper */
+		distinct.anim.swiper_logo_slider = function (
 			mySelector = ".swiper[data-swiper-name='logo-slider']"
 		) {
 			console.log("swiper start");
@@ -270,79 +270,79 @@ function distinct_anim() {
 			});
 		};
 
-		/* collabs - NOT IN USE */
-		// distinct.anim.splide_collabs = function (
-		// 	myClass = ".splide.collabs_logos"
-		// ) {
-		// 	if (!document.querySelector(myClass)) return; // if class exists on page, run this code
+		/* collabs - splide */
+		distinct.anim.splide_logo_slider = function (
+			myClass = ".splide.logo-slider_row"
+		) {
+			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
-		// 	let splides = document.querySelectorAll(myClass);
-		// 	distinct.splides.collabs = [];
-		// 	for (let i = 0; i < splides.length; i++) {
-		// 		let splideOptions = {
-		// 			perMove: 1,
-		// 			gap: "1rem",
-		// 			focus: 0,
-		// 			arrows: false,
-		// 			pagination: false,
-		// 			speed: 600,
-		// 			dragAngleThreshold: 60,
-		// 			rewindSpeed: 400,
-		// 			waitForTransition: false,
-		// 			updateOnMove: true,
-		// 			trimSpace: "move",
-		// 			type: "loop",
-		// 			drag: true,
-		// 			autoplay: false,
-		// 			pauseOnHover: false,
-		// 			interval: 10000,
-		// 			autoScroll: {
-		// 				autoStart: true,
-		// 				pauseOnHover: false,
-		// 				pauseOnFocus: false,
-		// 				rewind: false,
-		// 				speed: 1,
-		// 			},
-		// 		};
+			let splides = document.querySelectorAll(myClass);
+			distinct.splides.collabs = [];
+			for (let i = 0; i < splides.length; i++) {
+				let splideOptions = {
+					perMove: 1,
+					gap: "0rem",
+					focus: 0,
+					arrows: false,
+					pagination: false,
+					speed: 600,
+					dragAngleThreshold: 60,
+					rewindSpeed: 400,
+					waitForTransition: false,
+					updateOnMove: true,
+					trimSpace: "move",
+					type: "loop",
+					drag: true,
+					autoplay: false,
+					pauseOnHover: false,
+					interval: 10000,
+					autoScroll: {
+						autoStart: true,
+						pauseOnHover: true,
+						pauseOnFocus: false,
+						rewind: false,
+						speed: 1,
+					},
+				};
 
-		// 		let splide = new Splide(splides[i], splideOptions); // create splide instance with these options
+				let splide = new Splide(splides[i], splideOptions); // create splide instance with these options
 
-		// 		splide.on("mounted", function () {
-		// 			Webflow.require("ix2").init(); // relaunch WF interactions for card anims
-		// 		});
+				splide.on("mounted", function () {
+					Webflow.require("ix2").init(); // relaunch WF interactions for card anims
+				});
 
-		// 		splide.mount(window.splide.Extensions); // add splide to page along with extensions
+				splide.mount(window.splide.Extensions); // add splide to page along with extensions
 
-		// 		distinct.splides.collabs.push(splide); // add this splide to distinct obj so we can access it in devtools
+				distinct.splides.collabs.push(splide); // add this splide to distinct obj so we can access it in devtools
 
-		// 		// pause slider when out of view, and on mob
-		// 		// let mm = gsap.matchMedia();
-		// 		// mm.add("(min-width: 768px)", () => {
-		// 		// 	/* gsap scroll trigger to pause when out of viewport */
-		// 		ScrollTrigger.create({
-		// 			trigger: ".s-collaborators",
-		// 			start: "top bottom",
-		// 			end: "bottom top",
-		// 			onEnter: () => splide.Components.AutoScroll.play(),
-		// 			onLeave: () => splide.Components.AutoScroll.pause(),
-		// 			onEnterBack: () => splide.Components.AutoScroll.play(),
-		// 			onLeaveBack: () => splide.Components.AutoScroll.pause(),
-		// 		});
+				// pause slider when out of view, and on mob
+				// let mm = gsap.matchMedia();
+				// mm.add("(min-width: 768px)", () => {
+				// 	/* gsap scroll trigger to pause when out of viewport */
+				// ScrollTrigger.create({
+				// 	trigger: ".s-logo-slider",
+				// 	start: "top bottom",
+				// 	end: "bottom top",
+				// 	onEnter: () => splide.Components.AutoScroll.play(),
+				// 	onLeave: () => splide.Components.AutoScroll.pause(),
+				// 	onEnterBack: () => splide.Components.AutoScroll.play(),
+				// 	onLeaveBack: () => splide.Components.AutoScroll.pause(),
+				// });
 
-		// 		// 	return () => {
-		// 		// 		// custom cleanup code here (runs when it STOPS matching)
-		// 		// 		splide.Components.AutoScroll.pause();
-		// 		// 	};
-		// 		// });
-		// 		// mm.add("(max-width: 767px)", () => {
-		// 		// 	splide.Components.AutoScroll.pause();
-		// 		// });
+				// 	return () => {
+				// 		// custom cleanup code here (runs when it STOPS matching)
+				// 		splide.Components.AutoScroll.pause();
+				// 	};
+				// });
+				// mm.add("(max-width: 767px)", () => {
+				// 	splide.Components.AutoScroll.pause();
+				// });
 
-		// 		/* add progress bar */
-		// 		distinct.helpers.splide_progress(splide);
-		// 		// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
-		// 	}
-		// };
+				/* add progress bar */
+				// distinct.helpers.splide_progress(splide);
+				// distinct.helpers.splide_hover_pause(splide); //pause on hover on track
+			}
+		};
 
 		/* ethos slider */
 		distinct.anim.splide_about_ethos = function (myClass = ".splide.is-ethos") {
@@ -1879,16 +1879,16 @@ function distinct_anim() {
 		console.error("Error executing distinct.anim.splide_about_ethos():", error);
 	}
 
-	// try {
-	// 	distinct.anim.splide_collabs();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_collabs():", error);
-	// }
+	try {
+		distinct.anim.splide_logo_slider();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_logo_slider():", error);
+	}
 
 	try {
-		distinct.anim.swiper_collabs();
+		distinct.anim.swiper_logo_slider();
 	} catch (error) {
-		console.error("Error executing distinct.anim.swiper_collabs():", error);
+		console.error("Error executing distinct.anim.swiper_logo_slider():", error);
 	}
 
 	try {
