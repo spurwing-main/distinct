@@ -1,4 +1,5 @@
 // Create a global object to store component data
+/* */
 const distinct = {};
 distinct.anim = {};
 distinct.helpers = {};
