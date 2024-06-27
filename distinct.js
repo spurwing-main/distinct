@@ -277,9 +277,23 @@ function distinct_anim() {
 		) {
 			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
+			console.log("Starting splide logo slider fn");
+
 			let splides = document.querySelectorAll(myClass);
 			distinct.splides.collabs = [];
 			for (let i = 0; i < splides.length; i++) {
+				/* set speed of each slider, based on its width, an 'default width' and speed from testing, and a weighting factor so we can have the sliders going different speeds.
+				 */
+
+				let defaultSpeed = 2.5;
+				let splideSpeedWeighting = splides[i].getAttribute(
+					"data-splide-speed-weighting"
+				);
+				let splideWidth = splides[i].offsetWidth;
+				let splideSpeed =
+					defaultSpeed * splideSpeedWeighting * (splideWidth / 3600);
+				console.log(splideSpeed);
+
 				let splideOptions = {
 					perMove: 1,
 					gap: "0rem",
@@ -302,7 +316,7 @@ function distinct_anim() {
 						pauseOnHover: true,
 						pauseOnFocus: false,
 						rewind: false,
-						speed: 1,
+						speed: splideSpeed,
 					},
 				};
 
