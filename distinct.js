@@ -5,6 +5,8 @@ distinct.anim = {};
 distinct.helpers = {};
 distinct.splides = {};
 
+console.log("test1");
+
 function distinct_anim() {
 	// create all the anim functions
 	function anim_set_up() {
@@ -1881,6 +1883,7 @@ function distinct_anim() {
 		};
 
 		distinct.anim.nav_v3 = function () {
+			console.log("test");
 			const navLinks = document.querySelectorAll(".nav-link[distinct-nav-id]");
 			const navDrawer = document.querySelector(".nav-drawer");
 			const navContents = document.querySelectorAll(".nav-drawer_item");
