@@ -1384,7 +1384,7 @@ function distinct_anim() {
 		};
 
 		// Show nav images on hover
-		distinct.anim.navImages = function () {
+		distinct.anim.navImages_v1 = function () {
 			// Get all subnav elements
 			const subnavs = document.querySelectorAll(".subnav");
 
@@ -1395,24 +1395,66 @@ function distinct_anim() {
 				const subnavImages = subnav.querySelectorAll(".subnav_img");
 
 				// Hide all images except the first one
-				gsap.set(subnavImages, { opacity: 0, display: "none" });
-				gsap.set(subnavImages[0], { opacity: 1, display: "block" });
+				gsap.set(subnavImages, { autoAlpha: 0 });
+				gsap.set(subnavImages[0], { autoAlpha: 1 });
 
 				// Add event listeners to each subnav link
 				subnavLinks.forEach((link, index) => {
 					link.addEventListener("mouseenter", () => {
 						// Hide all images
 						gsap.to(subnavImages, {
-							opacity: 0,
-							display: "none",
+							autoAlpha: 0,
+							// display: "none",
 							duration: 0.3,
 						});
 						// Show the corresponding image
 						if (subnavImages[index]) {
 							gsap.to(subnavImages[index], {
-								opacity: 1,
-								display: "block",
+								autoAlpha: 1,
+								// display: "block",
 								duration: 0.3,
+							});
+						}
+					});
+				});
+			});
+		};
+
+		distinct.anim.navImages = function () {
+			const subnavs = document.querySelectorAll(".subnav");
+
+			subnavs.forEach((subnav) => {
+				const subnavLinks = subnav.querySelectorAll(".subnav_link");
+				const subnavImages = subnav.querySelectorAll(".subnav_img");
+
+				// Hide all images except the first one
+				gsap.set(subnavImages, { autoAlpha: 0 });
+				gsap.set(subnavImages[0], { autoAlpha: 1 });
+
+				let activeIndex = 0; // Track active image index
+
+				subnavLinks.forEach((link, index) => {
+					link.addEventListener("pointerenter", () => {
+						if (activeIndex === index) return; // Prevent redundant animation
+
+						activeIndex = index; // Update active index
+
+						// Kill any running tweens for smoother transitions
+						gsap.killTweensOf(subnavImages);
+
+						// Hide all images first
+						gsap.to(subnavImages, {
+							autoAlpha: 0,
+							duration: 0.3,
+							overwrite: "auto",
+						});
+
+						// Show the corresponding image
+						if (subnavImages[index]) {
+							gsap.to(subnavImages[index], {
+								autoAlpha: 1,
+								duration: 0.3,
+								overwrite: "auto",
 							});
 						}
 					});
@@ -1455,115 +1497,115 @@ function distinct_anim() {
 		};
 
 		// open / close nav dropdowns on hover - DISABLED
-		distinct.anim.navlinkhover = function () {
-			let mm = gsap.matchMedia();
+		// distinct.anim.navlinkhover = function () {
+		// 	let mm = gsap.matchMedia();
 
-			// add a media query. When it matches, the associated function will run
-			mm.add("(min-width: 768px)", () => {
-				const navLinks = document.querySelectorAll(".nav-link.is-trigger");
-				const navDropdowns = document.querySelectorAll(".nav_dropdown");
-				gsap.set(".nav_dropdown", { opacity: 0, height: 0 });
+		// 	// add a media query. When it matches, the associated function will run
+		// 	mm.add("(min-width: 768px)", () => {
+		// 		const navLinks = document.querySelectorAll(".nav-link.is-trigger");
+		// 		const navDropdowns = document.querySelectorAll(".nav_dropdown");
+		// 		gsap.set(".nav_dropdown", { opacity: 0, height: 0 });
 
-				// Function to animate dropdown when hovering over nav-link
-				function showDropdown(index) {
-					// console.log(index);
-					const dropdown = navDropdowns[index];
-					const tl_show = gsap.timeline();
-					gsap.set(dropdown, { opacity: 1 });
-					tl_show.to(dropdown, { height: "auto", duration: 0.5 });
-					tl_show.to(dropdown, { opacity: 1, duration: 0.25 }, "<+=0.2");
-				}
+		// 		// Function to animate dropdown when hovering over nav-link
+		// 		function showDropdown(index) {
+		// 			// console.log(index);
+		// 			const dropdown = navDropdowns[index];
+		// 			const tl_show = gsap.timeline();
+		// 			gsap.set(dropdown, { opacity: 1 });
+		// 			tl_show.to(dropdown, { height: "auto", duration: 0.5 });
+		// 			tl_show.to(dropdown, { opacity: 1, duration: 0.25 }, "<+=0.2");
+		// 		}
 
-				// Function to close dropdown when hovering away from nav-link
-				function hideDropdown(index) {
-					const dropdown = navDropdowns[index];
-					const tl_close = gsap.timeline();
-					tl_close.to(dropdown, { height: 0, duration: 0.5 });
-					tl_close.to(dropdown, { opacity: 0, duration: 0.25 }, "<+=0.2");
-				}
+		// 		// Function to close dropdown when hovering away from nav-link
+		// 		function hideDropdown(index) {
+		// 			const dropdown = navDropdowns[index];
+		// 			const tl_close = gsap.timeline();
+		// 			tl_close.to(dropdown, { height: 0, duration: 0.5 });
+		// 			tl_close.to(dropdown, { opacity: 0, duration: 0.25 }, "<+=0.2");
+		// 		}
 
-				// Loop through each nav-link and add event listeners
-				navLinks.forEach((navLink, index) => {
-					navLink.addEventListener("mouseenter", function () {
-						showDropdown(index);
-					});
-					navLink.addEventListener("mouseleave", function () {
-						hideDropdown(index);
-					});
-				});
-			});
-		};
+		// 		// Loop through each nav-link and add event listeners
+		// 		navLinks.forEach((navLink, index) => {
+		// 			navLink.addEventListener("mouseenter", function () {
+		// 				showDropdown(index);
+		// 			});
+		// 			navLink.addEventListener("mouseleave", function () {
+		// 				hideDropdown(index);
+		// 			});
+		// 		});
+		// 	});
+		// };
 
 		// open / close nav on mobile - DISABLED
-		distinct.anim.openCloseNav = function () {
-			let mm = gsap.matchMedia();
-			const header = document.querySelector(".header");
-			const menuToggle = header.querySelector("#nav-button");
-			const navMenu = header.querySelector("#nav-menu");
-			const scrollWrap = document.querySelector("#smooth-wrapper");
-			const headerBg = header.querySelector(".header_bg");
-			const navLinks = header.querySelectorAll(".nav-link");
-			const logoLink = header.querySelector(".logo_link");
-			var tl_nav;
+		// distinct.anim.openCloseNav = function () {
+		// 	let mm = gsap.matchMedia();
+		// 	const header = document.querySelector(".header");
+		// 	const menuToggle = header.querySelector("#nav-button");
+		// 	const navMenu = header.querySelector("#nav-menu");
+		// 	const scrollWrap = document.querySelector("#smooth-wrapper");
+		// 	const headerBg = header.querySelector(".header_bg");
+		// 	const navLinks = header.querySelectorAll(".nav-link");
+		// 	const logoLink = header.querySelector(".logo_link");
+		// 	var tl_nav;
 
-			function toggleMenu() {
-				navMenu.classList.toggle("is-open");
+		// 	function toggleMenu() {
+		// 		navMenu.classList.toggle("is-open");
 
-				if (navMenu.classList.contains("is-open")) {
-					scrollWrap.style.overflow = "hidden";
-					lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
-					tl_nav.play(); /* open menu animation */
-				} else {
-					scrollWrap.style.overflow = "";
-					lenis.start();
-					tl_nav.reverse();
-				}
-			}
+		// 		if (navMenu.classList.contains("is-open")) {
+		// 			scrollWrap.style.overflow = "hidden";
+		// 			lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
+		// 			tl_nav.play(); /* open menu animation */
+		// 		} else {
+		// 			scrollWrap.style.overflow = "";
+		// 			lenis.start();
+		// 			tl_nav.reverse();
+		// 		}
+		// 	}
 
-			// Create nav animation timeline
-			function navTimeline() {
-				const tl_nav = gsap.timeline({ paused: true });
-				tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
-				tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
-				tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
-				tl_nav.from(navMenu, { autoAlpha: 0, y: -20 }, 0);
-				// tl_nav.from(
-				// 	navLinks,
-				// 	{ autoAlpha: 0, x: -20, duration: 0.25, stagger: 0.1 },
-				// 	0
-				// );
-				return tl_nav;
-			}
+		// 	// Create nav animation timeline
+		// 	function navTimeline() {
+		// 		const tl_nav = gsap.timeline({ paused: true });
+		// 		tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
+		// 		tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
+		// 		tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
+		// 		tl_nav.from(navMenu, { autoAlpha: 0, y: -20 }, 0);
+		// 		// tl_nav.from(
+		// 		// 	navLinks,
+		// 		// 	{ autoAlpha: 0, x: -20, duration: 0.25, stagger: 0.1 },
+		// 		// 	0
+		// 		// );
+		// 		return tl_nav;
+		// 	}
 
-			function resetNav() {
-				// console.log("reset nav");
-				scrollWrap.style.overflow = "";
-				lenis.start();
-				navMenu.classList.remove("is-open");
-				if (tl_nav) {
-					tl_nav.revert();
-				}
-			}
+		// 	function resetNav() {
+		// 		// console.log("reset nav");
+		// 		scrollWrap.style.overflow = "";
+		// 		lenis.start();
+		// 		navMenu.classList.remove("is-open");
+		// 		if (tl_nav) {
+		// 			tl_nav.revert();
+		// 		}
+		// 	}
 
-			menuToggle.addEventListener("click", toggleMenu);
-			// run on small screens
-			mm.add("(max-width: 767px)", () => {
-				tl_nav = navTimeline();
-				menuToggle.addEventListener("click", toggleMenu);
+		// 	menuToggle.addEventListener("click", toggleMenu);
+		// 	// run on small screens
+		// 	mm.add("(max-width: 767px)", () => {
+		// 		tl_nav = navTimeline();
+		// 		menuToggle.addEventListener("click", toggleMenu);
 
-				return () => {
-					// clean up on large screens
-					resetNav();
-				};
-			});
+		// 		return () => {
+		// 			// clean up on large screens
+		// 			resetNav();
+		// 		};
+		// 	});
 
-			// check on window resize
-			window.addEventListener("resize", function (event) {
-				if (window.innerWidth > 767) {
-					resetNav();
-				}
-			});
-		};
+		// 	// check on window resize
+		// 	window.addEventListener("resize", function (event) {
+		// 		if (window.innerWidth > 767) {
+		// 			resetNav();
+		// 		}
+		// 	});
+		// };
 
 		distinct.anim.splitSliders = function () {
 			if (!document.querySelector(".split-slider_list")) return;
@@ -1836,6 +1878,95 @@ function distinct_anim() {
 				onLeaveBack: () => brandsAnimation.pause(), // Also pause animation when leaving the viewport to the bottom
 			});
 		};
+
+		distinct.anim.nav_v3 = function () {
+			const navLinks = document.querySelectorAll(".nav-link[distinct-nav-id]");
+			const navDrawer = document.querySelector(".nav-drawer");
+			const navContents = document.querySelectorAll(".nav-drawer_item");
+			const nav = document.querySelector(".header_top");
+			let activeContent = null;
+			let isHovered = false;
+			let nav_h = nav.scrollHeight;
+
+			// Set initial states
+			gsap.set([navContents, navDrawer], { display: "block", autoAlpha: 0 });
+			gsap.set([navDrawer], { height: nav_h });
+
+			// Timeline for opening the drawer
+			let nav_tl = gsap.timeline({ paused: true }).to(navDrawer, {
+				height: "auto",
+				autoAlpha: 1,
+				duration: 0.5,
+			});
+
+			// Function to open the drawer and update content
+			function openDrawer(targetContent) {
+				if (activeContent !== targetContent) {
+					gsap.to(navDrawer, {
+						height: targetContent.scrollHeight + nav_h,
+						duration: 0.5,
+					});
+
+					gsap.to(activeContent, { autoAlpha: 0, duration: 0.5 });
+					gsap.to(targetContent, { autoAlpha: 1, duration: 0.5 });
+
+					activeContent = targetContent;
+				}
+
+				nav_tl.play();
+			}
+
+			// Event listeners for nav links
+			navLinks.forEach((link) => {
+				link.addEventListener("mouseenter", () => {
+					const id = link.getAttribute("distinct-nav-id");
+					if (!id) return;
+
+					const targetContent = document.querySelector(
+						`.nav-drawer_item[distinct-nav-id='${id}']`
+					);
+					if (!targetContent) return;
+
+					openDrawer(targetContent);
+					isHovered = true; // Keep drawer open
+				});
+				link.addEventListener("mouseleave", () => {
+					isHovered = false;
+					setTimeout(() => {
+						if (!isHovered) {
+							nav_tl.reverse();
+							gsap.to(navContents, { autoAlpha: 0 });
+							activeContent = null;
+						}
+					}, 100);
+				});
+			});
+
+			// Keep drawer open when hovering over it
+			navDrawer.addEventListener("mouseenter", () => (isHovered = true));
+			navDrawer.addEventListener("mouseleave", () => {
+				isHovered = false;
+				setTimeout(() => {
+					if (!isHovered) {
+						nav_tl.reverse();
+						gsap.to(navContents, { autoAlpha: 0 });
+						activeContent = null;
+					}
+				}, 100); // Small delay to prevent flickering
+			});
+
+			// // Close drawer when leaving the header
+			// nav.addEventListener("mouseleave", () => {
+			// 	isHovered = false;
+			// 	setTimeout(() => {
+			// 		if (!isHovered) {
+			// 			nav_tl.reverse();
+			// 			gsap.to(navContents, { autoAlpha: 0 });
+			// 			activeContent = null;
+			// 		}
+			// 	}, 100);
+			// });
+		};
 	}
 
 	anim_set_up();
@@ -1983,6 +2114,8 @@ function distinct_anim() {
 	} catch (error) {
 		console.error("Error executing distinct.anim.whyDistinct():", error);
 	}
+
+	distinct.anim.nav_v3();
 }
 
 // // wait until DOM is ready
