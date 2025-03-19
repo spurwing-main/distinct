@@ -1883,93 +1883,310 @@ function distinct_anim() {
 		};
 
 		distinct.anim.nav_v3 = function () {
-			console.log("test");
 			const navLinks = document.querySelectorAll(".nav-link[distinct-nav-id]");
 			const navDrawer = document.querySelector(".nav-drawer");
 			const navContents = document.querySelectorAll(".nav-drawer_item");
 			const nav = document.querySelector(".header_top");
+			const header = document.querySelector(".header");
+			const navTrigger = document.querySelector(".nav_button-dev");
 			let activeContent = null;
+			let activeChevron = null;
 			let isHovered = false;
-			let nav_h = nav.scrollHeight;
-
-			// Set initial states
-			gsap.set([navContents, navDrawer], { display: "block", autoAlpha: 0 });
-			gsap.set([navDrawer], { height: nav_h });
-
-			// Timeline for opening the drawer
-			let nav_tl = gsap.timeline({ paused: true }).to(navDrawer, {
-				height: "auto",
-				autoAlpha: 1,
-				duration: 0.5,
+			let isOpen = false;
+			let nav_h = 0;
+			let mm = gsap.matchMedia();
+			const lottieURL =
+				"https://cdn.prod.website-files.com/65b11cc99c263ddcf414574b/65f2dab23428c5bcb22ec9a2_distinct-nav.json";
+			const lottieAnimation = lottie.loadAnimation({
+				container: document.querySelector(".nav-button-lottie"),
+				renderer: "svg",
+				loop: false,
+				autoplay: false,
+				path: lottieURL,
 			});
+			let playhead = { frame: 0 };
 
 			// Function to open the drawer and update content
 			function openDrawer(targetContent) {
 				if (activeContent !== targetContent) {
-					gsap.to(navDrawer, {
-						height: targetContent.scrollHeight + nav_h,
-						duration: 0.5,
+					let tl = gsap.timeline({
+						paused: true,
+						defaults: { ease: "power3.inOut" },
 					});
+					tl.to(
+						navDrawer,
+						{
+							height: targetContent.scrollHeight + nav_h,
+							autoAlpha: 1,
+							// 		duration: 0.5,
+							duration: 0.5,
+							borderBottomRightRadius: "1.5rem",
+							borderBottomLeftRadius: "1.5rem",
+						},
+						0
+					);
 
-					gsap.to(activeContent, { autoAlpha: 0, duration: 0.5 });
-					gsap.to(targetContent, { autoAlpha: 1, duration: 0.5 });
+					tl.to(activeContent, { autoAlpha: 0, duration: 0.5 }, 0);
+					tl.to(targetContent, { autoAlpha: 1, duration: 0.5 }, 0);
+					tl.play();
 
 					activeContent = targetContent;
 				}
-
-				nav_tl.play();
 			}
 
-			// Event listeners for nav links
-			navLinks.forEach((link) => {
-				link.addEventListener("mouseenter", () => {
-					const id = link.getAttribute("distinct-nav-id");
-					if (!id) return;
+			function closeDrawer() {
+				let tl = gsap.timeline({
+					paused: true,
+					defaults: { ease: "power3.inOut" },
+				});
+				tl.to(
+					navDrawer,
+					{
+						height: nav_h,
+						duration: 0.5,
+						autoAlpha: 0,
+						borderBottomRightRadius: 0,
+						borderBottomLeftRadius: 0,
+					},
+					0
+				);
+				tl.to(navContents, { autoAlpha: 0 }, 0);
+				tl.play();
+				activeContent = null;
+			}
 
-					const targetContent = document.querySelector(
-						`.nav-drawer_item[distinct-nav-id='${id}']`
+			function expandItem(targetContent, targetChevron) {
+				// if clicked on a different item, close current one and open new one
+				if (activeContent !== targetContent) {
+					let tl = gsap.timeline({
+						paused: true,
+						defaults: { ease: "power3.inOut" },
+					});
+					tl.to(
+						targetContent,
+						{
+							height: targetContent.scrollHeight,
+							autoAlpha: 1,
+							duration: 0.5,
+						},
+						0
 					);
-					if (!targetContent) return;
+					tl.to(targetChevron, { rotation: 180, duration: 0.35 }, 0);
+					tl.to(activeContent, { autoAlpha: 0, duration: 0.5, height: 0 }, 0);
+					tl.to(activeChevron, { rotation: 0, duration: 0.35 }, 0);
 
-					openDrawer(targetContent);
-					isHovered = true; // Keep drawer open
-				});
-				link.addEventListener("mouseleave", () => {
-					isHovered = false;
-					setTimeout(() => {
-						if (!isHovered) {
-							nav_tl.reverse();
-							gsap.to(navContents, { autoAlpha: 0 });
-							activeContent = null;
-						}
-					}, 100);
-				});
-			});
+					tl.play();
 
-			// Keep drawer open when hovering over it
-			navDrawer.addEventListener("mouseenter", () => (isHovered = true));
-			navDrawer.addEventListener("mouseleave", () => {
+					activeContent = targetContent;
+					activeChevron = targetChevron;
+				}
+				// otherwise if we've clicked on the open item, close it
+				else if (activeContent === targetContent) {
+					let tl = gsap.timeline({
+						paused: true,
+						defaults: { ease: "power3.inOut" },
+					});
+					tl.to(
+						targetContent,
+						{
+							height: 0,
+							autoAlpha: 0,
+							duration: 0.5,
+						},
+						0
+					);
+					tl.to(targetChevron, { rotation: 0, duration: 0.35 }, 0);
+
+					tl.play();
+
+					activeContent = null;
+					activeChevron = null;
+				}
+			}
+
+			function handleMouseEnter_link(event) {
+				const link = event.currentTarget;
+				const id = link.getAttribute("distinct-nav-id");
+				if (!id) return;
+				const targetContent = document.querySelector(
+					`.nav-drawer_item[distinct-nav-id='${id}']`
+				);
+				if (!targetContent) return;
+				openDrawer(targetContent);
+				isHovered = true;
+			}
+
+			function handleMouseLeave_link() {
 				isHovered = false;
 				setTimeout(() => {
 					if (!isHovered) {
-						nav_tl.reverse();
-						gsap.to(navContents, { autoAlpha: 0 });
-						activeContent = null;
+						closeDrawer();
 					}
-				}, 100); // Small delay to prevent flickering
+				}, 100);
+			}
+
+			function handleClick_link(event) {
+				const link = event.currentTarget;
+				const id = link.getAttribute("distinct-nav-id");
+				if (!id) return;
+				const targetContent = document.querySelector(
+					`.nav-drawer_item[distinct-nav-id='${id}']`
+				);
+				const targetChevron = link.querySelector(".nav-link_chevron");
+				if (!targetContent) return;
+				expandItem(targetContent, targetChevron);
+			}
+
+			function handleMouseEnter_content() {
+				console.log("mouse enter content");
+
+				isHovered = true;
+			}
+
+			function handleMouseLeave_content() {
+				console.log("mouse leave content");
+
+				isHovered = false;
+				setTimeout(() => {
+					if (!isHovered) {
+						closeDrawer();
+					}
+				}, 100);
+			}
+
+			function handleTriggerClick() {
+				console.log("trigger click");
+				console.log(isOpen);
+
+				let tl_open = gsap.timeline({
+					paused: true,
+					defaults: { ease: "power3.inOut" },
+				});
+				tl_open.to(header, { height: "100dvh", duration: 0.5 }, 0);
+				tl_open.to(".nav_menu", { autoAlpha: 1, duration: 0.5 }, 0);
+				tl_open.to(".nav_flex", { autoAlpha: 1, duration: 0.5 }, 0);
+				// play lottie
+				tl_open.to(
+					playhead,
+					{
+						frame: 65,
+						duration: 1.2,
+						ease: "none",
+						onUpdate: () => {
+							lottieAnimation.goToAndStop(playhead.frame, true);
+						},
+					},
+					0
+				);
+
+				let tl_close = gsap.timeline({
+					paused: true,
+					defaults: { ease: "power3.inOut" },
+				});
+				tl_close.to(header, { height: "4.5rem", duration: 0.5 }, 0);
+				tl_close.to(".nav_menu", { autoAlpha: 0, duration: 0.5 }, 0);
+				tl_close.to(".nav_flex", { autoAlpha: 0, duration: 0.5 }, 0);
+				tl_close.to(
+					playhead,
+					{
+						frame: lottieAnimation.totalFrames - 1,
+						duration: 1.2,
+						ease: "none",
+						onUpdate: () => {
+							lottieAnimation.goToAndStop(playhead.frame, true);
+						},
+					},
+					0
+				);
+
+				if (isOpen) {
+					tl_close.play();
+					isOpen = false;
+					header.classList.remove("is-open");
+				} else {
+					tl_open.play();
+					isOpen = true;
+					header.classList.add("is-open");
+				}
+			}
+
+			// Run on desktop
+			mm.add("(min-width: 768px)", () => {
+				// Set initial states
+				nav_h = nav.scrollHeight;
+				gsap.set([navContents, navDrawer], { display: "block", autoAlpha: 0 });
+				gsap.set([navDrawer], { height: nav_h });
+
+				// Event listeners for nav links
+				navLinks.forEach((link) => {
+					link.addEventListener("mouseenter", handleMouseEnter_link);
+					link.addEventListener("mouseleave", handleMouseLeave_link);
+				});
+
+				// Keep drawer open when hovering over it
+				navContents.forEach((content) => {
+					content.addEventListener("mouseenter", handleMouseEnter_content);
+					content.addEventListener("mouseleave", handleMouseLeave_content);
+				});
+
+				return () => {
+					console.log("clean up desktop");
+					// clean up desktop event listeners
+					navLinks.forEach((link) => {
+						link.removeEventListener("mouseenter", handleMouseEnter_link);
+						link.removeEventListener("mouseleave", handleMouseLeave_link);
+					});
+					navContents.forEach((content) => {
+						content.removeEventListener("mouseenter", handleMouseEnter_content);
+						content.removeEventListener("mouseleave", handleMouseLeave_content);
+					});
+
+					// clear active content
+					activeContent = null;
+
+					console.log(isOpen);
+				};
 			});
 
-			// // Close drawer when leaving the header
-			// nav.addEventListener("mouseleave", () => {
-			// 	isHovered = false;
-			// 	setTimeout(() => {
-			// 		if (!isHovered) {
-			// 			nav_tl.reverse();
-			// 			gsap.to(navContents, { autoAlpha: 0 });
-			// 			activeContent = null;
-			// 		}
-			// 	}, 100);
-			// });
+			// Run on mobile
+			mm.add("(max-width: 767px)", () => {
+				// set initial states for mob
+				gsap.set(navContents, {
+					display: "block",
+					autoAlpha: 0,
+					height: 0,
+				});
+
+				// Event listeners for nav links
+				navLinks.forEach((link) => {
+					link.addEventListener("click", handleClick_link);
+				});
+
+				// handle nav trigger click
+				navTrigger.addEventListener("click", handleTriggerClick);
+
+				return () => {
+					// clean up mobile event listeners
+					navLinks.forEach((link) => {
+						link.removeEventListener("click", handleClick_link);
+					});
+
+					navTrigger.removeEventListener("click", handleTriggerClick);
+
+					// ensure any hidden content is shown
+					gsap.set([navContents, ".nav_menu", ".nav_flex"], {
+						autoAlpha: 1,
+					});
+
+					// reset lottie
+					lottieAnimation.goToAndStop(playhead.frame, false);
+
+					header.classList.remove("is-open");
+					isOpen = false;
+
+					console.log(isOpen);
+				};
+			});
 		};
 	}
 
