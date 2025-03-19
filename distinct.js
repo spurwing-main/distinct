@@ -5,7 +5,7 @@ distinct.anim = {};
 distinct.helpers = {};
 distinct.splides = {};
 
-console.log("test1");
+console.log("dev");
 
 function distinct_anim() {
 	// create all the anim functions
@@ -1387,39 +1387,61 @@ function distinct_anim() {
 		};
 
 		// Show nav images on hover
-		distinct.anim.navImages_v1 = function () {
+		distinct.anim.navImages_v3 = function () {
 			// Get all subnav elements
 			const subnavs = document.querySelectorAll(".subnav");
 
-			// Loop through each subnav
 			subnavs.forEach((subnav) => {
 				// Get subnav links and images within the current subnav
-				const subnavLinks = subnav.querySelectorAll(".subnav_link");
+				const subnavLinks = subnav.querySelectorAll(".link-subgroup_item");
 				const subnavImages = subnav.querySelectorAll(".subnav_img");
+				let activeIndex = 0; // Track active image index
 
-				// Hide all images except the first one
+				if (subnavImages.length === 0) return;
+
+				// Initialize: Hide all images and show the default (first) image
 				gsap.set(subnavImages, { autoAlpha: 0 });
 				gsap.set(subnavImages[0], { autoAlpha: 1 });
 
-				// Add event listeners to each subnav link
-				subnavLinks.forEach((link, index) => {
-					link.addEventListener("mouseenter", () => {
-						// Hide all images
-						gsap.to(subnavImages, {
+				// Helper function to show an image by index using a timeline
+				const showImage = (index) => {
+					// Kill any running tweens to avoid conflicts
+					// gsap.killTweensOf(subnavImages);
+
+					// Create a timeline to run both fade-out and fade-in concurrently
+					const tl = gsap.timeline();
+					tl.to(
+						subnavImages[activeIndex],
+						{
 							autoAlpha: 0,
-							// display: "none",
-							duration: 0.3,
-						});
-						// Show the corresponding image
-						if (subnavImages[index]) {
-							gsap.to(subnavImages[index], {
-								autoAlpha: 1,
-								// display: "block",
-								duration: 0.3,
-							});
-						}
-					});
+							duration: 0.8,
+							ease: "power3.out",
+							overwrite: "auto",
+						},
+						0
+					);
+					tl.to(
+						subnavImages[index],
+						{
+							autoAlpha: 1,
+							duration: 0.4,
+							ease: "power3.in",
+							overwrite: "auto",
+						},
+						0
+					);
+
+					// set active index
+					activeIndex = index;
+				};
+
+				// Add event listeners to each subnav link for mouseenter events
+				subnavLinks.forEach((link, index) => {
+					link.addEventListener("mouseenter", () => showImage(index));
 				});
+
+				// Optionally reset to the default image when the mouse leaves the subnav area
+				subnav.addEventListener("mouseleave", () => showImage(0));
 			});
 		};
 
@@ -1498,117 +1520,6 @@ function distinct_anim() {
 				handleScroll();
 			});
 		};
-
-		// open / close nav dropdowns on hover - DISABLED
-		// distinct.anim.navlinkhover = function () {
-		// 	let mm = gsap.matchMedia();
-
-		// 	// add a media query. When it matches, the associated function will run
-		// 	mm.add("(min-width: 768px)", () => {
-		// 		const navLinks = document.querySelectorAll(".nav-link.is-trigger");
-		// 		const navDropdowns = document.querySelectorAll(".nav_dropdown");
-		// 		gsap.set(".nav_dropdown", { opacity: 0, height: 0 });
-
-		// 		// Function to animate dropdown when hovering over nav-link
-		// 		function showDropdown(index) {
-		// 			// console.log(index);
-		// 			const dropdown = navDropdowns[index];
-		// 			const tl_show = gsap.timeline();
-		// 			gsap.set(dropdown, { opacity: 1 });
-		// 			tl_show.to(dropdown, { height: "auto", duration: 0.5 });
-		// 			tl_show.to(dropdown, { opacity: 1, duration: 0.25 }, "<+=0.2");
-		// 		}
-
-		// 		// Function to close dropdown when hovering away from nav-link
-		// 		function hideDropdown(index) {
-		// 			const dropdown = navDropdowns[index];
-		// 			const tl_close = gsap.timeline();
-		// 			tl_close.to(dropdown, { height: 0, duration: 0.5 });
-		// 			tl_close.to(dropdown, { opacity: 0, duration: 0.25 }, "<+=0.2");
-		// 		}
-
-		// 		// Loop through each nav-link and add event listeners
-		// 		navLinks.forEach((navLink, index) => {
-		// 			navLink.addEventListener("mouseenter", function () {
-		// 				showDropdown(index);
-		// 			});
-		// 			navLink.addEventListener("mouseleave", function () {
-		// 				hideDropdown(index);
-		// 			});
-		// 		});
-		// 	});
-		// };
-
-		// open / close nav on mobile - DISABLED
-		// distinct.anim.openCloseNav = function () {
-		// 	let mm = gsap.matchMedia();
-		// 	const header = document.querySelector(".header");
-		// 	const menuToggle = header.querySelector("#nav-button");
-		// 	const navMenu = header.querySelector("#nav-menu");
-		// 	const scrollWrap = document.querySelector("#smooth-wrapper");
-		// 	const headerBg = header.querySelector(".header_bg");
-		// 	const navLinks = header.querySelectorAll(".nav-link");
-		// 	const logoLink = header.querySelector(".logo_link");
-		// 	var tl_nav;
-
-		// 	function toggleMenu() {
-		// 		navMenu.classList.toggle("is-open");
-
-		// 		if (navMenu.classList.contains("is-open")) {
-		// 			scrollWrap.style.overflow = "hidden";
-		// 			lenis.stop(); /* this is what actually stops scrolling when lenis is enabled */
-		// 			tl_nav.play(); /* open menu animation */
-		// 		} else {
-		// 			scrollWrap.style.overflow = "";
-		// 			lenis.start();
-		// 			tl_nav.reverse();
-		// 		}
-		// 	}
-
-		// 	// Create nav animation timeline
-		// 	function navTimeline() {
-		// 		const tl_nav = gsap.timeline({ paused: true });
-		// 		tl_nav.to(header, { height: "80vh", duration: 0.5 }, 0);
-		// 		tl_nav.to(headerBg, { backgroundColor: "white", duration: 0.5 }, 0);
-		// 		tl_nav.to(logoLink, { color: "black", duration: 0.5 }, 0);
-		// 		tl_nav.from(navMenu, { autoAlpha: 0, y: -20 }, 0);
-		// 		// tl_nav.from(
-		// 		// 	navLinks,
-		// 		// 	{ autoAlpha: 0, x: -20, duration: 0.25, stagger: 0.1 },
-		// 		// 	0
-		// 		// );
-		// 		return tl_nav;
-		// 	}
-
-		// 	function resetNav() {
-		// 		// console.log("reset nav");
-		// 		scrollWrap.style.overflow = "";
-		// 		lenis.start();
-		// 		navMenu.classList.remove("is-open");
-		// 		if (tl_nav) {
-		// 			tl_nav.revert();
-		// 		}
-		// 	}
-
-		// 	menuToggle.addEventListener("click", toggleMenu);
-		// 	// run on small screens
-		// 	mm.add("(max-width: 767px)", () => {
-		// 		tl_nav = navTimeline();
-		// 		menuToggle.addEventListener("click", toggleMenu);
-
-		// 		return () => {
-		// 			// clean up on large screens
-		// 			resetNav();
-		// 		};
-		// 	});
-
-		// 	// check on window resize
-		// 	window.addEventListener("resize", function (event) {
-		// 		if (window.innerWidth > 767) {
-		// 			resetNav();
-		// 		}
-		// 	});
-		// };
 
 		distinct.anim.splitSliders = function () {
 			if (!document.querySelector(".split-slider_list")) return;
@@ -2307,7 +2218,7 @@ function distinct_anim() {
 	}
 
 	try {
-		distinct.anim.navImages();
+		distinct.anim.navImages_v3();
 	} catch (error) {
 		console.error("Error executing distinct.anim.navImages():", error);
 	}
