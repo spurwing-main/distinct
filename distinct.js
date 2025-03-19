@@ -5,8 +5,6 @@ distinct.anim = {};
 distinct.helpers = {};
 distinct.splides = {};
 
-console.log("dev");
-
 function distinct_anim() {
 	// create all the anim functions
 	function anim_set_up() {
@@ -231,8 +229,6 @@ function distinct_anim() {
 		distinct.anim.swiper_logo_slider = function (
 			mySelector = ".swiper[data-swiper-name='logo-slider']"
 		) {
-			console.log("swiper start");
-
 			// Get all swiper containers
 			const swiperContainers = document.querySelectorAll(mySelector);
 
@@ -279,8 +275,6 @@ function distinct_anim() {
 		) {
 			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
-			console.log("Starting splide logo slider fn");
-
 			let splides = document.querySelectorAll(myClass);
 			distinct.splides.collabs = [];
 			for (let i = 0; i < splides.length; i++) {
@@ -294,7 +288,6 @@ function distinct_anim() {
 				let splideWidth = splides[i].offsetWidth;
 				let splideSpeed =
 					defaultSpeed * splideSpeedWeighting * (splideWidth / 3600);
-				console.log(splideSpeed);
 
 				let splideOptions = {
 					perMove: 1,
@@ -947,7 +940,6 @@ function distinct_anim() {
 
 			// stop if no instances of component
 			if (distinct.collabs.instances.length == 0) {
-				console.log("no collabs found");
 				return;
 			}
 
@@ -983,11 +975,8 @@ function distinct_anim() {
 				// do the animation
 				instance.rows.forEach((row) => {
 					// for each row, store the initial states of the row and all child logos, and the rows starting height
-					// row.logos = row.gsapScope(".collabs_item");
 					row.state = Flip.getState(row.logos, row.element);
 					row.startingHeight = gsap.getProperty(row.element, "height");
-					// console.log(row.startingHeight);
-					// gsap.set(row, { height: row.startingHeight });
 				});
 
 				// do the style change
@@ -1089,7 +1078,6 @@ function distinct_anim() {
 				const percent =
 					(caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) *
 					100;
-				// console.log(percent);
 				if (caseStudies.progressElement) {
 					gsap.to(caseStudies.progressElement, {
 						width: `${percent}%`,
@@ -1157,8 +1145,6 @@ function distinct_anim() {
 				//update cS indexes
 				updateIndexes();
 
-				// console.log(caseStudies.currentSlideIndex);
-
 				const tl_slide = gsap.timeline();
 				const gsap_component = gsap.utils.selector(caseStudies.component);
 				const gsap_slide = gsap.utils.selector(
@@ -1191,8 +1177,6 @@ function distinct_anim() {
 			if (!document.querySelector(".accordion_list")) return;
 
 			let accordions = gsap.utils.toArray(".accordion_list");
-
-			console.log(accordions);
 
 			accordions.forEach((accordion) => {
 				let panels = gsap.utils.toArray(".accordion-panel", accordion);
@@ -1387,7 +1371,7 @@ function distinct_anim() {
 		};
 
 		// Show nav images on hover
-		distinct.anim.navImages_v3 = function () {
+		distinct.anim.navImages = function () {
 			// Get all subnav elements
 			const subnavs = document.querySelectorAll(".subnav");
 
@@ -1461,48 +1445,6 @@ function distinct_anim() {
 
 				// Optionally, reset to the default image when the mouse leaves the subnav area
 				subnav.addEventListener("mouseleave", () => showImage(0));
-			});
-		};
-
-		distinct.anim.navImages = function () {
-			const subnavs = document.querySelectorAll(".subnav");
-
-			subnavs.forEach((subnav) => {
-				const subnavLinks = subnav.querySelectorAll(".subnav_link");
-				const subnavImages = subnav.querySelectorAll(".subnav_img");
-
-				// Hide all images except the first one
-				gsap.set(subnavImages, { autoAlpha: 0 });
-				gsap.set(subnavImages[0], { autoAlpha: 1 });
-
-				let activeIndex = 0; // Track active image index
-
-				subnavLinks.forEach((link, index) => {
-					link.addEventListener("pointerenter", () => {
-						if (activeIndex === index) return; // Prevent redundant animation
-
-						activeIndex = index; // Update active index
-
-						// Kill any running tweens for smoother transitions
-						gsap.killTweensOf(subnavImages);
-
-						// Hide all images first
-						gsap.to(subnavImages, {
-							autoAlpha: 0,
-							duration: 0.3,
-							overwrite: "auto",
-						});
-
-						// Show the corresponding image
-						if (subnavImages[index]) {
-							gsap.to(subnavImages[index], {
-								autoAlpha: 1,
-								duration: 0.3,
-								overwrite: "auto",
-							});
-						}
-					});
-				});
 			});
 		};
 
@@ -1812,13 +1754,13 @@ function distinct_anim() {
 			});
 		};
 
-		distinct.anim.nav_v3 = function () {
+		distinct.anim.nav = function () {
 			const navLinks = document.querySelectorAll(".nav-link[distinct-nav-id]");
 			const navDrawer = document.querySelector(".nav-drawer");
 			const navContents = document.querySelectorAll(".nav-drawer_item");
 			const nav = document.querySelector(".header_top");
 			const header = document.querySelector(".header");
-			const navTrigger = document.querySelector(".nav_button-dev");
+			const navTrigger = document.querySelector(".nav_button");
 			let activeContent = null;
 			let activeChevron = null;
 			let isHovered = false;
@@ -1968,14 +1910,10 @@ function distinct_anim() {
 			}
 
 			function handleMouseEnter_content() {
-				console.log("mouse enter content");
-
 				isHovered = true;
 			}
 
 			function handleMouseLeave_content() {
-				console.log("mouse leave content");
-
 				isHovered = false;
 				setTimeout(() => {
 					if (!isHovered) {
@@ -1985,9 +1923,6 @@ function distinct_anim() {
 			}
 
 			function handleTriggerClick() {
-				console.log("trigger click");
-				console.log(isOpen);
-
 				let tl_open = gsap.timeline({
 					paused: true,
 					defaults: { ease: "power3.inOut" },
@@ -2060,7 +1995,6 @@ function distinct_anim() {
 				});
 
 				return () => {
-					console.log("clean up desktop");
 					// clean up desktop event listeners
 					navLinks.forEach((link) => {
 						link.removeEventListener("mouseenter", handleMouseEnter_link);
@@ -2073,8 +2007,6 @@ function distinct_anim() {
 
 					// clear active content
 					activeContent = null;
-
-					console.log(isOpen);
 				};
 			});
 
@@ -2113,8 +2045,6 @@ function distinct_anim() {
 
 					header.classList.remove("is-open");
 					isOpen = false;
-
-					console.log(isOpen);
 				};
 			});
 		};
@@ -2131,235 +2061,140 @@ function distinct_anim() {
 		console.error("Error executing distinct.anim.headerBg():", error);
 	}
 
-	// try {
-	// 	distinct.anim.updateDates();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.updateDates():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.updateDates_watch();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.updateDates_watch():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_home_services();
-	// } catch (error) {
-	// 	console.error(
-	// 		"Error executing distinct.anim.splide_home_services():",
-	// 		error
-	// 	);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_sustainability_approach();
-	// } catch (error) {
-	// 	console.error(
-	// 		"Error executing distinct.anim.splide_sustainability_approach():",
-	// 		error
-	// 	);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_home_testimonials();
-	// } catch (error) {
-	// 	console.error(
-	// 		"Error executing distinct.anim.splide_home_testimonials():",
-	// 		error
-	// 	);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_about_ethos();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_about_ethos():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_logo_slider();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_logo_slider():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.swiper_logo_slider();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.swiper_logo_slider():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.splide_home_hero();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splide_home_hero():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.splitText();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splitText():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.slideText_v2();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.slideText_v2:", error);
-	// }
-
-	// try {
-	// 	distinct.anim.brandScroll_v2();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.brandScroll_v2():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.flexccordion();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.flexccordion():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.featuresTab();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.featuresTab():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.collabs();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.collabs():", error);
-	// }
-
-	// try {
-	// 	distinct.anim.accordion();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.accordion():", error);
-	// }
+	try {
+		distinct.anim.updateDates();
+	} catch (error) {
+		console.error("Error executing distinct.anim.updateDates():", error);
+	}
 
 	try {
-		distinct.anim.navImages_v3();
+		distinct.anim.updateDates_watch();
+	} catch (error) {
+		console.error("Error executing distinct.anim.updateDates_watch():", error);
+	}
+
+	try {
+		distinct.anim.splide_home_services();
+	} catch (error) {
+		console.error(
+			"Error executing distinct.anim.splide_home_services():",
+			error
+		);
+	}
+
+	try {
+		distinct.anim.splide_sustainability_approach();
+	} catch (error) {
+		console.error(
+			"Error executing distinct.anim.splide_sustainability_approach():",
+			error
+		);
+	}
+
+	try {
+		distinct.anim.splide_home_testimonials();
+	} catch (error) {
+		console.error(
+			"Error executing distinct.anim.splide_home_testimonials():",
+			error
+		);
+	}
+
+	try {
+		distinct.anim.splide_about_ethos();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_about_ethos():", error);
+	}
+
+	try {
+		distinct.anim.splide_logo_slider();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_logo_slider():", error);
+	}
+
+	try {
+		distinct.anim.swiper_logo_slider();
+	} catch (error) {
+		console.error("Error executing distinct.anim.swiper_logo_slider():", error);
+	}
+
+	try {
+		distinct.anim.splide_home_hero();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splide_home_hero():", error);
+	}
+
+	try {
+		distinct.anim.splitText();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splitText():", error);
+	}
+
+	try {
+		distinct.anim.slideText_v2();
+	} catch (error) {
+		console.error("Error executing distinct.anim.slideText_v2:", error);
+	}
+
+	try {
+		distinct.anim.brandScroll_v2();
+	} catch (error) {
+		console.error("Error executing distinct.anim.brandScroll_v2():", error);
+	}
+
+	try {
+		distinct.anim.flexccordion();
+	} catch (error) {
+		console.error("Error executing distinct.anim.flexccordion():", error);
+	}
+
+	try {
+		distinct.anim.featuresTab();
+	} catch (error) {
+		console.error("Error executing distinct.anim.featuresTab():", error);
+	}
+
+	try {
+		distinct.anim.collabs();
+	} catch (error) {
+		console.error("Error executing distinct.anim.collabs():", error);
+	}
+
+	try {
+		distinct.anim.accordion();
+	} catch (error) {
+		console.error("Error executing distinct.anim.accordion():", error);
+	}
+
+	try {
+		distinct.anim.navImages();
 	} catch (error) {
 		console.error("Error executing distinct.anim.navImages():", error);
 	}
 
-	// try {
-	// 	distinct.anim.parallax();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.parallax():", error);
-	// }
+	try {
+		distinct.anim.parallax();
+	} catch (error) {
+		console.error("Error executing distinct.anim.parallax():", error);
+	}
 
-	// try {
-	// 	distinct.anim.slider_caseStudies();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.slider_caseStudies():", error);
-	// }
+	try {
+		distinct.anim.slider_caseStudies();
+	} catch (error) {
+		console.error("Error executing distinct.anim.slider_caseStudies():", error);
+	}
 
-	// try {
-	// 	distinct.anim.splitSliders();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.splitSliders():", error);
-	// }
+	try {
+		distinct.anim.splitSliders();
+	} catch (error) {
+		console.error("Error executing distinct.anim.splitSliders():", error);
+	}
 
-	// try {
-	// 	distinct.anim.whyDistinct();
-	// } catch (error) {
-	// 	console.error("Error executing distinct.anim.whyDistinct():", error);
-	// }
+	try {
+		distinct.anim.whyDistinct();
+	} catch (error) {
+		console.error("Error executing distinct.anim.whyDistinct():", error);
+	}
 
-	distinct.anim.nav_v3();
+	distinct.anim.nav();
 }
-
-// // wait until DOM is ready
-// document.addEventListener("DOMContentLoaded", function (event) {
-// 	// wait until window is loaded - all images, styles-sheets, fonts, links, and other media assets. You could also use addEventListener() instead
-// 	window.onload = function () {
-// 		headerBg();
-
-// 		// Do date updating - Run once on page load
-// 		updateDates();
-// 		//and then set up a mutation observer if we are on a page with post-lists - only the Resource page
-// 		if (document.getElementById("post-list")) {
-// 			// Create a new instance of MutationObserver
-// 			const observer = new MutationObserver(updateDates);
-
-// 			// Configuration of the observer:
-// 			const config = { childList: true, subtree: true };
-
-// 			// Start observing the target node for configured mutations
-// 			observer.observe(document.getElementById("post-list"), config);
-// 		}
-
-// 		// OPTIONAL - waits til next tick render to run code (prevents running in the middle of render tick)
-// 		window.requestAnimationFrame(function () {
-// 			// GSAP custom code goes here
-// 			splitText();
-// 			try {
-// 				brandScroll();
-// 			} catch (err) {
-// 				console.log("no brand scroll");
-// 			}
-// 			flexccordion();
-// 			featuresTab();
-// 			collabs();
-// 			accordion();
-// 			navImages();
-// 			parallax();
-// 			try {
-// 				slider_caseStudies();
-// 			} catch (err) {
-// 				console.log("no case studies slider");
-// 			}
-
-// 			const sliders = gsap.utils.toArray(".split-slider_list");
-// 			sliders.forEach((slider, index) => {
-// 				const slides = gsap.utils.toArray(
-// 					".split-slider_item",
-// 					slider
-// 				); /* return descendent elements */
-
-// 				let currentSlide = slides[0];
-
-// 				/* make split-slider appropriate height for scrolling */
-// 				const slider_height = slides.length * 100 + "vh";
-// 				gsap.set(slider, { height: slider_height });
-
-// 				/* for each slide */
-// 				slides.forEach((slide, index) => {
-// 					// 	/* get internal content */
-// 					const img = slide.querySelector(".split-slider_img-wrap");
-// 					const text = slide.querySelector(".split-slider_footer");
-// 					// 	/* for all but first slide, hide content */
-// 					if (index > 0) {
-// 						gsap.set(slide, { opacity: 0 });
-// 					}
-// 					gsap.to(slide, {
-// 						/* create scroll trigger for each slide */
-// 						scrollTrigger: {
-// 							trigger: slide,
-// 							// start: () => (index - 0.5) * innerHeight,
-// 							start: "top top",
-// 							end: "+=500",
-// 							// end: () => innerHeight,
-// 							pin: true,
-// 							pinSpacing: false, // Keeps pinned element at the top of the viewport
-// 							// endTrigger: '.split-slider_item:last-child',
-// 							// end: "bottom 150px",
-// 							scrub: true, // Smoothly animate the pinning
-// 							//markers: true,
-// 							onToggle: (self) => self.isActive && setSlide(slide),
-// 						},
-// 						opacity: 1,
-// 					});
-// 				});
-
-// 				function setSlide(newSlide) {
-// 					if (newSlide !== currentSlide) {
-// 						gsap.to(currentSlide, { autoAlpha: 0 });
-// 						gsap.to(newSlide, { autoAlpha: 1 });
-// 						currentSlide = newSlide;
-// 					}
-// 				}
-// 			});
-// 		});
-// 	};
-// });
