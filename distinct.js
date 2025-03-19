@@ -1395,7 +1395,8 @@ function distinct_anim() {
 				// Get subnav links and images within the current subnav
 				const subnavLinks = subnav.querySelectorAll(".link-subgroup_item");
 				const subnavImages = subnav.querySelectorAll(".subnav_img");
-				let activeIndex = 0; // Track active image index
+				let activeIndex = 0;
+				let transitionTimeout = null; // For debouncing rapid events
 
 				if (subnavImages.length === 0) return;
 
@@ -1403,44 +1404,62 @@ function distinct_anim() {
 				gsap.set(subnavImages, { autoAlpha: 0 });
 				gsap.set(subnavImages[0], { autoAlpha: 1 });
 
-				// Helper function to show an image by index using a timeline
 				const showImage = (index) => {
-					// Kill any running tweens to avoid conflicts
-					// gsap.killTweensOf(subnavImages);
+					// Clear any pending transition to debounce rapid events
+					if (transitionTimeout) clearTimeout(transitionTimeout);
 
-					// Create a timeline to run both fade-out and fade-in concurrently
-					const tl = gsap.timeline();
-					tl.to(
-						subnavImages[activeIndex],
-						{
-							autoAlpha: 0,
-							duration: 0.8,
-							ease: "power3.out",
-							overwrite: "auto",
-						},
-						0
-					);
-					tl.to(
-						subnavImages[index],
-						{
-							autoAlpha: 1,
-							duration: 0.4,
-							ease: "power3.in",
-							overwrite: "auto",
-						},
-						0
-					);
+					// Debounce the transition
+					transitionTimeout = setTimeout(() => {
+						if (activeIndex !== index) {
+							const tl = gsap.timeline();
+							let oldImage = subnavImages[activeIndex];
+							let newImage = subnavImages[index];
 
-					// set active index
-					activeIndex = index;
+							// Fade in the new image and fade out the old one with a slight offset
+							tl.to(
+								newImage,
+								{
+									autoAlpha: 1,
+									duration: 0.4,
+									ease: "power3.inOut",
+									overwrite: "auto",
+								},
+								0
+							);
+							tl.to(
+								oldImage,
+								{
+									autoAlpha: 0,
+									duration: 0.3,
+									ease: "power3.inOut",
+									overwrite: "auto",
+								},
+								0.1
+							);
+
+							// Update data attributes and active index
+							newImage.setAttribute("data-active", "true");
+							oldImage.setAttribute("data-active", "false");
+							activeIndex = index;
+						} else {
+							// In case the same index is re-triggered
+							gsap.to(subnavImages[index], {
+								autoAlpha: 1,
+								duration: 0.3,
+								overwrite: "auto",
+							});
+							subnavImages[index].setAttribute("data-active", "true");
+						}
+						transitionTimeout = null;
+					}, 50); // 50ms debounce delay; adjust if needed
 				};
 
-				// Add event listeners to each subnav link for mouseenter events
+				// Add event listeners for mouseenter events
 				subnavLinks.forEach((link, index) => {
 					link.addEventListener("mouseenter", () => showImage(index));
 				});
 
-				// Optionally reset to the default image when the mouse leaves the subnav area
+				// Optionally, reset to the default image when the mouse leaves the subnav area
 				subnav.addEventListener("mouseleave", () => showImage(0));
 			});
 		};
@@ -2112,110 +2131,110 @@ function distinct_anim() {
 		console.error("Error executing distinct.anim.headerBg():", error);
 	}
 
-	try {
-		distinct.anim.updateDates();
-	} catch (error) {
-		console.error("Error executing distinct.anim.updateDates():", error);
-	}
+	// try {
+	// 	distinct.anim.updateDates();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.updateDates():", error);
+	// }
 
-	try {
-		distinct.anim.updateDates_watch();
-	} catch (error) {
-		console.error("Error executing distinct.anim.updateDates_watch():", error);
-	}
+	// try {
+	// 	distinct.anim.updateDates_watch();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.updateDates_watch():", error);
+	// }
 
-	try {
-		distinct.anim.splide_home_services();
-	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_home_services():",
-			error
-		);
-	}
+	// try {
+	// 	distinct.anim.splide_home_services();
+	// } catch (error) {
+	// 	console.error(
+	// 		"Error executing distinct.anim.splide_home_services():",
+	// 		error
+	// 	);
+	// }
 
-	try {
-		distinct.anim.splide_sustainability_approach();
-	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_sustainability_approach():",
-			error
-		);
-	}
+	// try {
+	// 	distinct.anim.splide_sustainability_approach();
+	// } catch (error) {
+	// 	console.error(
+	// 		"Error executing distinct.anim.splide_sustainability_approach():",
+	// 		error
+	// 	);
+	// }
 
-	try {
-		distinct.anim.splide_home_testimonials();
-	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_home_testimonials():",
-			error
-		);
-	}
+	// try {
+	// 	distinct.anim.splide_home_testimonials();
+	// } catch (error) {
+	// 	console.error(
+	// 		"Error executing distinct.anim.splide_home_testimonials():",
+	// 		error
+	// 	);
+	// }
 
-	try {
-		distinct.anim.splide_about_ethos();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splide_about_ethos():", error);
-	}
+	// try {
+	// 	distinct.anim.splide_about_ethos();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splide_about_ethos():", error);
+	// }
 
-	try {
-		distinct.anim.splide_logo_slider();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splide_logo_slider():", error);
-	}
+	// try {
+	// 	distinct.anim.splide_logo_slider();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splide_logo_slider():", error);
+	// }
 
-	try {
-		distinct.anim.swiper_logo_slider();
-	} catch (error) {
-		console.error("Error executing distinct.anim.swiper_logo_slider():", error);
-	}
+	// try {
+	// 	distinct.anim.swiper_logo_slider();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.swiper_logo_slider():", error);
+	// }
 
-	try {
-		distinct.anim.splide_home_hero();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splide_home_hero():", error);
-	}
+	// try {
+	// 	distinct.anim.splide_home_hero();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splide_home_hero():", error);
+	// }
 
-	try {
-		distinct.anim.splitText();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splitText():", error);
-	}
+	// try {
+	// 	distinct.anim.splitText();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splitText():", error);
+	// }
 
-	try {
-		distinct.anim.slideText_v2();
-	} catch (error) {
-		console.error("Error executing distinct.anim.slideText_v2:", error);
-	}
+	// try {
+	// 	distinct.anim.slideText_v2();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.slideText_v2:", error);
+	// }
 
-	try {
-		distinct.anim.brandScroll_v2();
-	} catch (error) {
-		console.error("Error executing distinct.anim.brandScroll_v2():", error);
-	}
+	// try {
+	// 	distinct.anim.brandScroll_v2();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.brandScroll_v2():", error);
+	// }
 
-	try {
-		distinct.anim.flexccordion();
-	} catch (error) {
-		console.error("Error executing distinct.anim.flexccordion():", error);
-	}
+	// try {
+	// 	distinct.anim.flexccordion();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.flexccordion():", error);
+	// }
 
-	try {
-		distinct.anim.featuresTab();
-	} catch (error) {
-		console.error("Error executing distinct.anim.featuresTab():", error);
-	}
+	// try {
+	// 	distinct.anim.featuresTab();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.featuresTab():", error);
+	// }
 
-	try {
-		distinct.anim.collabs();
-	} catch (error) {
-		console.error("Error executing distinct.anim.collabs():", error);
-	}
+	// try {
+	// 	distinct.anim.collabs();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.collabs():", error);
+	// }
 
-	try {
-		distinct.anim.accordion();
-	} catch (error) {
-		console.error("Error executing distinct.anim.accordion():", error);
-	}
+	// try {
+	// 	distinct.anim.accordion();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.accordion():", error);
+	// }
 
 	try {
 		distinct.anim.navImages_v3();
@@ -2223,29 +2242,29 @@ function distinct_anim() {
 		console.error("Error executing distinct.anim.navImages():", error);
 	}
 
-	try {
-		distinct.anim.parallax();
-	} catch (error) {
-		console.error("Error executing distinct.anim.parallax():", error);
-	}
+	// try {
+	// 	distinct.anim.parallax();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.parallax():", error);
+	// }
 
-	try {
-		distinct.anim.slider_caseStudies();
-	} catch (error) {
-		console.error("Error executing distinct.anim.slider_caseStudies():", error);
-	}
+	// try {
+	// 	distinct.anim.slider_caseStudies();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.slider_caseStudies():", error);
+	// }
 
-	try {
-		distinct.anim.splitSliders();
-	} catch (error) {
-		console.error("Error executing distinct.anim.splitSliders():", error);
-	}
+	// try {
+	// 	distinct.anim.splitSliders();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.splitSliders():", error);
+	// }
 
-	try {
-		distinct.anim.whyDistinct();
-	} catch (error) {
-		console.error("Error executing distinct.anim.whyDistinct():", error);
-	}
+	// try {
+	// 	distinct.anim.whyDistinct();
+	// } catch (error) {
+	// 	console.error("Error executing distinct.anim.whyDistinct():", error);
+	// }
 
 	distinct.anim.nav_v3();
 }
