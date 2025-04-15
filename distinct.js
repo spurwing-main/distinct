@@ -74,9 +74,7 @@ function distinct_anim() {
 		};
 
 		/* homepage services */
-		distinct.anim.splide_home_services = function (
-			myClass = ".splide.is-home-services"
-		) {
+		distinct.anim.splide_home_services = function (myClass = ".splide.is-home-services") {
 			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
 			let splides = document.querySelectorAll(myClass);
@@ -191,9 +189,7 @@ function distinct_anim() {
 		};
 
 		/* homepage testimonials */
-		distinct.anim.splide_home_testimonials = function (
-			myClass = ".splide.is-home-testimonials"
-		) {
+		distinct.anim.splide_home_testimonials = function (myClass = ".splide.is-home-testimonials") {
 			if (!document.querySelector(myClass)) return;
 
 			let splides = document.querySelectorAll(myClass);
@@ -270,9 +266,7 @@ function distinct_anim() {
 		};
 
 		/* collabs - splide */
-		distinct.anim.splide_logo_slider = function (
-			myClass = ".splide.logo-slider_row"
-		) {
+		distinct.anim.splide_logo_slider = function (myClass = ".splide.logo-slider_row") {
 			if (!document.querySelector(myClass)) return; // if class exists on page, run this code
 
 			let splides = document.querySelectorAll(myClass);
@@ -282,12 +276,9 @@ function distinct_anim() {
 				 */
 
 				let defaultSpeed = 2.5;
-				let splideSpeedWeighting = splides[i].getAttribute(
-					"data-splide-speed-weighting"
-				);
+				let splideSpeedWeighting = splides[i].getAttribute("data-splide-speed-weighting");
 				let splideWidth = splides[i].offsetWidth;
-				let splideSpeed =
-					defaultSpeed * splideSpeedWeighting * (splideWidth / 3600);
+				let splideSpeed = defaultSpeed * splideSpeedWeighting * (splideWidth / 3600);
 
 				let splideOptions = {
 					perMove: 1,
@@ -367,8 +358,7 @@ function distinct_anim() {
 					type: "slide",
 					autoplay: false,
 					arrows: true,
-					mediaQuery:
-						"min" /* mobile first - so slider is destroyed for 768 and above */,
+					mediaQuery: "min" /* mobile first - so slider is destroyed for 768 and above */,
 					breakpoints: {
 						768: {
 							destroy: true,
@@ -381,9 +371,7 @@ function distinct_anim() {
 		};
 
 		/* hero slider on homepage */
-		distinct.anim.splide_home_hero = function (
-			myClass = ".splide.is-home-hero"
-		) {
+		distinct.anim.splide_home_hero = function (myClass = ".splide.is-home-hero") {
 			if (!document.querySelector(myClass)) return;
 
 			let splides = document.querySelectorAll(myClass);
@@ -405,9 +393,7 @@ function distinct_anim() {
 				var videosContainer = document.querySelector(".hero");
 				var videos = videosContainer.querySelectorAll("video");
 				/* get progress bar */
-				var progressBar = document.querySelector(
-					".splide-button_progress-circle"
-				);
+				var progressBar = document.querySelector(".splide-button_progress-circle");
 
 				/* add pause/play functionality */
 				splide.on("autoplay:play", function () {
@@ -435,10 +421,7 @@ function distinct_anim() {
 						Autoplay.play();
 						/* also get any onscreen videos and play them */
 						videos.forEach((video) => {
-							if (
-								video.paused &&
-								video.closest(".splide__slide").classList.contains("is-active")
-							) {
+							if (video.paused && video.closest(".splide__slide").classList.contains("is-active")) {
 								video.play();
 							}
 						});
@@ -646,12 +629,8 @@ function distinct_anim() {
 					if (indentedAncestor) {
 						//if target is indented
 						var arrow = indentedAncestor.querySelector(".indent_arrow"); // arrow to move
-						var outerLine = target.querySelector(
-							".split-line-outer:first-of-type "
-						); // line to move arrow to
-						var innerLine = outerLine.querySelector(
-							".split-line-inner:first-of-type "
-						);
+						var outerLine = target.querySelector(".split-line-outer:first-of-type "); // line to move arrow to
+						var innerLine = outerLine.querySelector(".split-line-inner:first-of-type ");
 						outerLine.prepend(arrow); // move arrow
 						gsap.set(outerLine, {
 							display: "flex",
@@ -682,109 +661,102 @@ function distinct_anim() {
 				autoAlpha: 0,
 			});
 			tl.set(
-				[
-					".flexccordion_item:not(:nth-child(1)) :is(.flexccordion-bar, .flexccordion-bar_short)",
-				],
+				[".flexccordion_item:not(:nth-child(1)) :is(.flexccordion-bar, .flexccordion-bar_short)"],
 				{
 					height: 0,
 				}
 			);
 
 			// Click event listener for flexccordion headers
-			document
-				.querySelectorAll(".flexccordion_item-header")
-				.forEach((header, index) => {
-					header.addEventListener("click", () => {
-						const tl_item = gsap.timeline();
-						// get parent flexccordion
-						const flexccordion = header.closest(".flexccordion");
-						//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
-						let gsap_flexccordion = gsap.utils.selector(flexccordion);
+			document.querySelectorAll(".flexccordion_item-header").forEach((header, index) => {
+				header.addEventListener("click", () => {
+					const tl_item = gsap.timeline();
+					// get parent flexccordion
+					const flexccordion = header.closest(".flexccordion");
+					//Returns a selector function that's scoped to a particular Element, meaning it'll only find descendants of that Element like jQuery.find().
+					let gsap_flexccordion = gsap.utils.selector(flexccordion);
 
-						// Find the parent .flexccordion_item element
-						const item = header.closest(".flexccordion_item");
+					// Find the parent .flexccordion_item element
+					const item = header.closest(".flexccordion_item");
 
-						// Find the .flexccordion_item-body element within the parent item
-						const body = item.querySelector(".flexccordion_item-body");
+					// Find the .flexccordion_item-body element within the parent item
+					const body = item.querySelector(".flexccordion_item-body");
 
-						// Find the .card element within the parent item
-						const card = item.querySelector(".card");
+					// Find the .card element within the parent item
+					const card = item.querySelector(".card");
 
-						// Get parent right element - we need to hide this so cards are hoverable */
-						const right = item.querySelector(".flexccordion_right");
+					// Get parent right element - we need to hide this so cards are hoverable */
+					const right = item.querySelector(".flexccordion_right");
 
-						// get bar
-						const bar = item.querySelector(".flexccordion-bar");
-						const bar_short = item.querySelector(".flexccordion-bar_short");
+					// get bar
+					const bar = item.querySelector(".flexccordion-bar");
+					const bar_short = item.querySelector(".flexccordion-bar_short");
 
-						// Close all other items within this flexccordion
-						tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
+					// Close all other items within this flexccordion
+					tl_item.to(gsap_flexccordion(".flexccordion_item-body"), {
+						height: 0,
+						opacity: 0,
+						duration: 0.35,
+					});
+					tl_item.to(
+						gsap_flexccordion(".card"),
+						{
+							autoAlpha: 0,
+							// display: "none", /* we need to hide cards otherwise hover doesn't work */
+							duration: 0.1,
+						},
+						0.1
+					);
+					tl_item.to(
+						gsap_flexccordion([".flexccordion-bar", ".flexccordion-bar_short"]),
+						{
 							height: 0,
+						},
+						0
+					);
+					gsap.set(body, { height: "auto", opacity: 1 }); // temporarily set the body to height auto so we can capture the required height of the bar
+					const item_height = item.offsetHeight;
+					// Expand clicked item
+					tl_item.from(
+						body,
+						{
+							height: "0",
 							opacity: 0,
 							duration: 0.35,
-						});
-						tl_item.to(
-							gsap_flexccordion(".card"),
-							{
-								autoAlpha: 0,
-								// display: "none", /* we need to hide cards otherwise hover doesn't work */
-								duration: 0.1,
-							},
-							0.1
-						);
-						tl_item.to(
-							gsap_flexccordion([
-								".flexccordion-bar",
-								".flexccordion-bar_short",
-							]),
-							{
-								height: 0,
-							},
-							0
-						);
-						gsap.set(body, { height: "auto", opacity: 1 }); // temporarily set the body to height auto so we can capture the required height of the bar
-						const item_height = item.offsetHeight;
-						// Expand clicked item
-						tl_item.from(
-							body,
-							{
-								height: "0",
-								opacity: 0,
-								duration: 0.35,
-							},
-							0.2
-						);
-						tl_item.to(
-							card,
-							{
-								autoAlpha: 1,
-								duration: 0.35,
-								// display: "flex",
-							},
-							0.3
-						);
-						tl_item.to(
-							bar,
-							{
-								height: item_height,
-								duration: 0.35,
-							},
-							0.2
-						);
-						tl_item.addLabel("open", ">");
-						tl_item.to(
-							bar_short,
-							{
-								height: 25,
-								duration: 0.35,
-							},
-							0.2
-						);
+						},
+						0.2
+					);
+					tl_item.to(
+						card,
+						{
+							autoAlpha: 1,
+							duration: 0.35,
+							// display: "flex",
+						},
+						0.3
+					);
+					tl_item.to(
+						bar,
+						{
+							height: item_height,
+							duration: 0.35,
+						},
+						0.2
+					);
+					tl_item.addLabel("open", ">");
+					tl_item.to(
+						bar_short,
+						{
+							height: 25,
+							duration: 0.35,
+						},
+						0.2
+					);
 
-						// when body anim is done, set body height to auto
-						tl_item.set(body, { height: "auto", opacity: 1 }, "open");
-					});
+					// when body anim is done, set body height to auto
+					tl_item.set(body, { height: "auto", opacity: 1 }, "open");
 				});
+			});
 		};
 
 		distinct.anim.featuresTab = function () {
@@ -803,12 +775,9 @@ function distinct_anim() {
 			});
 
 			/* make first item active */
-			tl.set(
-				".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)",
-				{
-					opacity: 1,
-				}
-			);
+			tl.set(".features_item:nth-child(1) :is(.feature_body, .feature_img, .feature-title)", {
+				opacity: 1,
+			});
 
 			// event listener for feature titles
 			var featureTitles = document.querySelectorAll(".feature-title");
@@ -1026,21 +995,14 @@ function distinct_anim() {
 				currentSlideIndex: 0,
 				nextSlideIndex: 0,
 				previousSlideIndex: 0,
-				nextButton: document.querySelector(
-					".splide__arrow--next#case-study-next"
-				),
-				previousButton: document.querySelector(
-					".splide__arrow--prev#case-study-prev"
-				),
+				nextButton: document.querySelector(".splide__arrow--next#case-study-next"),
+				previousButton: document.querySelector(".splide__arrow--prev#case-study-prev"),
 				loop: true,
-				progressElement: document.querySelector(
-					".slider-progress_bar#case-study"
-				),
+				progressElement: document.querySelector(".slider-progress_bar#case-study"),
 			};
 
 			(function getSlides() {
-				const slideElements =
-					caseStudies.component.querySelectorAll(".case-study"); // get all slides
+				const slideElements = caseStudies.component.querySelectorAll(".case-study"); // get all slides
 
 				slideElements.forEach((slideElement, index) => {
 					const slideObj = {
@@ -1075,9 +1037,7 @@ function distinct_anim() {
 
 			// update progress bar
 			function updateProgress() {
-				const percent =
-					(caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) *
-					100;
+				const percent = (caseStudies.currentSlideIndex / (caseStudies.slides.length - 1)) * 100;
 				if (caseStudies.progressElement) {
 					gsap.to(caseStudies.progressElement, {
 						width: `${percent}%`,
@@ -1087,11 +1047,7 @@ function distinct_anim() {
 			}
 
 			// get next and previous slides
-			function getPreviousAndNextIndexes(
-				totalSlides,
-				currentIndex,
-				shouldLoop
-			) {
+			function getPreviousAndNextIndexes(totalSlides, currentIndex, shouldLoop) {
 				if (currentIndex < 0 || currentIndex >= totalSlides) {
 					throw new Error("Current slide index is out of range");
 				}
@@ -1151,23 +1107,16 @@ function distinct_anim() {
 					caseStudies.slides[caseStudies.currentSlideIndex].slide
 				);
 				tl_slide.to(
-					gsap_component(
-						".case-study_img-wrap, .case-study_body, .testimonial_caption"
-					),
+					gsap_component(".case-study_img-wrap, .case-study_body, .testimonial_caption"),
 					{
 						opacity: 0,
 						duration: 0.35,
 					}
 				);
-				tl_slide.to(
-					gsap_slide(
-						".case-study_img-wrap, .case-study_body, .testimonial_caption"
-					),
-					{
-						opacity: 1,
-						duration: 0.35,
-					}
-				);
+				tl_slide.to(gsap_slide(".case-study_img-wrap, .case-study_body, .testimonial_caption"), {
+					opacity: 1,
+					duration: 0.35,
+				});
 
 				updateProgress();
 			}
@@ -1265,39 +1214,37 @@ function distinct_anim() {
 		distinct.anim.parallax = function () {
 			if (!document.querySelector(".parallax")) return;
 
-			gsap.utils
-				.toArray(document.querySelectorAll(".parallax"))
-				.forEach((parallax) => {
-					const depth = 0.125;
-					const movement = -(parallax.offsetHeight * depth);
+			gsap.utils.toArray(document.querySelectorAll(".parallax")).forEach((parallax) => {
+				const depth = 0.125;
+				const movement = -(parallax.offsetHeight * depth);
 
-					const tl = gsap.timeline();
+				const tl = gsap.timeline();
 
-					// tl.set(parallax, {
-					// 	y: -movement,
-					// 	scale: 1.25,
-					// });
+				// tl.set(parallax, {
+				// 	y: -movement,
+				// 	scale: 1.25,
+				// });
 
-					tl.fromTo(
-						parallax,
-						{
-							y: -movement,
-							// opacity: 1,
+				tl.fromTo(
+					parallax,
+					{
+						y: -movement,
+						// opacity: 1,
+					},
+					{
+						y: movement,
+						// opacity: 1,
+						ease: "none",
+						scrollTrigger: {
+							trigger: parallax,
+							scrub: true,
+							markers: false,
 						},
-						{
-							y: movement,
-							// opacity: 1,
-							ease: "none",
-							scrollTrigger: {
-								trigger: parallax,
-								scrub: true,
-								markers: false,
-							},
-						}
-					);
+					}
+				);
 
-					tl.from(parallax, { autoAlpha: 0 }, 0.5);
-				});
+				tl.from(parallax, { autoAlpha: 0 }, 0.5);
+			});
 		};
 
 		// Change dates to 'pretty' text
@@ -1305,9 +1252,7 @@ function distinct_anim() {
 			if (!document.querySelector(".date")) return;
 
 			// Get all elements with class .resource-card_date that haven't been processed yet
-			const dateElements = document.querySelectorAll(
-				".date:not([data-processed])"
-			);
+			const dateElements = document.querySelectorAll(".date:not([data-processed])");
 
 			// Get the current date
 			const currentDate = new Date();
@@ -1337,9 +1282,7 @@ function distinct_anim() {
 					} else if (yearsDiff > 0) {
 						displayString = `${yearsDiff} year${yearsDiff > 1 ? "s" : ""} ago`;
 					} else if (monthsDiff > 0) {
-						displayString = `${monthsDiff} month${
-							monthsDiff > 1 ? "s" : ""
-						} ago`;
+						displayString = `${monthsDiff} month${monthsDiff > 1 ? "s" : ""} ago`;
 					} else if (weeksDiff > 0) {
 						displayString = `${weeksDiff} week${weeksDiff > 1 ? "s" : ""} ago`;
 					} else {
@@ -1389,6 +1332,7 @@ function distinct_anim() {
 				gsap.set(subnavImages[0], { autoAlpha: 1 });
 
 				const showImage = (index) => {
+					console.log("showImage", index);
 					// Clear any pending transition to debounce rapid events
 					if (transitionTimeout) clearTimeout(transitionTimeout);
 
@@ -1404,8 +1348,8 @@ function distinct_anim() {
 								newImage,
 								{
 									autoAlpha: 1,
-									duration: 0.4,
-									ease: "power3.inOut",
+									duration: 0.7,
+									ease: "power1.out",
 									overwrite: "auto",
 								},
 								0
@@ -1414,8 +1358,8 @@ function distinct_anim() {
 								oldImage,
 								{
 									autoAlpha: 0,
-									duration: 0.3,
-									ease: "power3.inOut",
+									duration: 0.6,
+									ease: "power1.out",
 									overwrite: "auto",
 								},
 								0.1
@@ -1548,9 +1492,7 @@ function distinct_anim() {
 				let itemTotal = lists.first().children().length;
 				component.find("[tr-scroll-toggle='number-total']").text(itemTotal);
 				// create trigger divs & spacer
-				let firstTrigger = component
-					.find("[tr-scroll-toggle='trigger']")
-					.first();
+				let firstTrigger = component.find("[tr-scroll-toggle='trigger']").first();
 				for (let i = 1; i < itemTotal; i++) {
 					firstTrigger.clone().appendTo(component);
 				}
@@ -1579,9 +1521,7 @@ function distinct_anim() {
 						component
 							.find("[tr-scroll-toggle='transform-x']")
 							.css("transform", `translateX(${activeIndex * -100}%)`);
-						component
-							.find("[tr-scroll-toggle='number-current']")
-							.text(activeIndex + 1);
+						component.find("[tr-scroll-toggle='number-current']").text(activeIndex + 1);
 						lists.each(function (index) {
 							$(this).children().removeClass("is-active");
 							$(this).children().eq(activeIndex).addClass("is-active");
@@ -1593,9 +1533,7 @@ function distinct_anim() {
 					anchorLinks.on("click", function () {
 						let myIndex = $(this).index();
 						let scrollDistance =
-							triggers.eq(myIndex).offset().top +
-							triggers.eq(myIndex).height() -
-							1;
+							triggers.eq(myIndex).offset().top + triggers.eq(myIndex).height() - 1;
 						$("html, body").animate({ scrollTop: scrollDistance });
 					});
 					// triggers timeline
@@ -1619,16 +1557,8 @@ function distinct_anim() {
 						});
 						lists.each(function () {
 							let childItem = $(this).children().eq(triggerIndex);
-							tl.to(
-								childItem.find("[tr-item-animation='scale-to-1']"),
-								{ scale: 1 },
-								0
-							);
-							tl.from(
-								childItem.find("[tr-item-animation='scale-from-1']"),
-								{ scale: 1 },
-								0
-							);
+							tl.to(childItem.find("[tr-item-animation='scale-to-1']"), { scale: 1 }, 0);
+							tl.from(childItem.find("[tr-item-animation='scale-from-1']"), { scale: 1 }, 0);
 							tl.to(
 								childItem.find("[tr-item-animation='progress-horizontal']"),
 								{ width: "100%" },
@@ -1639,16 +1569,8 @@ function distinct_anim() {
 								{ height: "100%" },
 								0
 							);
-							tl.to(
-								childItem.find("[tr-item-animation='rotate-to-0']"),
-								{ rotation: 0 },
-								0
-							);
-							tl.from(
-								childItem.find("[tr-item-animation='rotate-from-0']"),
-								{ rotation: 0 },
-								0
-							);
+							tl.to(childItem.find("[tr-item-animation='rotate-to-0']"), { rotation: 0 }, 0);
+							tl.from(childItem.find("[tr-item-animation='rotate-from-0']"), { rotation: 0 }, 0);
 						});
 					});
 					// component timeline
@@ -1663,16 +1585,8 @@ function distinct_anim() {
 							ease: "none",
 						},
 					});
-					tl.to(
-						component.find("[tr-section-animation='scale-to-1']"),
-						{ scale: 1 },
-						0
-					);
-					tl.from(
-						component.find("[tr-section-animation='scale-from-1']"),
-						{ scale: 1 },
-						0
-					);
+					tl.to(component.find("[tr-section-animation='scale-to-1']"), { scale: 1 }, 0);
+					tl.from(component.find("[tr-section-animation='scale-from-1']"), { scale: 1 }, 0);
 					tl.to(
 						component.find("[tr-section-animation='progress-horizontal']"),
 						{ width: "100%" },
@@ -1683,16 +1597,8 @@ function distinct_anim() {
 						{ height: "100%" },
 						0
 					);
-					tl.to(
-						component.find("[tr-section-animation='rotate-to-0']"),
-						{ rotation: 0 },
-						0
-					);
-					tl.from(
-						component.find("[tr-section-animation='rotate-from-0']"),
-						{ rotation: 0 },
-						0
-					);
+					tl.to(component.find("[tr-section-animation='rotate-to-0']"), { rotation: 0 }, 0);
+					tl.from(component.find("[tr-section-animation='rotate-from-0']"), { rotation: 0 }, 0);
 					// optional scroll snapping
 					if (component.attr("tr-scroll-snap") === "true") {
 						let tl2 = gsap.timeline({
@@ -1716,12 +1622,8 @@ function distinct_anim() {
 					// smaller screen sizes
 					return () => {
 						trSpacer.hide();
-						component
-							.find("[tr-scroll-toggle='transform-y']")
-							.css("transform", "translateY(0%)");
-						component
-							.find("[tr-scroll-toggle='transform-x']")
-							.css("transform", "translateX(0%)");
+						component.find("[tr-scroll-toggle='transform-y']").css("transform", "translateY(0%)");
+						component.find("[tr-scroll-toggle='transform-x']").css("transform", "translateX(0%)");
 						lists.each(function (index) {
 							$(this).children().removeClass("is-active");
 						});
@@ -1880,9 +1782,7 @@ function distinct_anim() {
 				const link = event.currentTarget;
 				const id = link.getAttribute("distinct-nav-id");
 				if (!id) return;
-				const targetContent = document.querySelector(
-					`.nav-drawer_item[distinct-nav-id='${id}']`
-				);
+				const targetContent = document.querySelector(`.nav-drawer_item[distinct-nav-id='${id}']`);
 				if (!targetContent) return;
 				openDrawer(targetContent);
 				isHovered = true;
@@ -1901,9 +1801,7 @@ function distinct_anim() {
 				const link = event.currentTarget;
 				const id = link.getAttribute("distinct-nav-id");
 				if (!id) return;
-				const targetContent = document.querySelector(
-					`.nav-drawer_item[distinct-nav-id='${id}']`
-				);
+				const targetContent = document.querySelector(`.nav-drawer_item[distinct-nav-id='${id}']`);
 				const targetChevron = link.querySelector(".nav-link_chevron");
 				if (!targetContent) return;
 				expandItem(targetContent, targetChevron);
@@ -2076,28 +1974,19 @@ function distinct_anim() {
 	try {
 		distinct.anim.splide_home_services();
 	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_home_services():",
-			error
-		);
+		console.error("Error executing distinct.anim.splide_home_services():", error);
 	}
 
 	try {
 		distinct.anim.splide_sustainability_approach();
 	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_sustainability_approach():",
-			error
-		);
+		console.error("Error executing distinct.anim.splide_sustainability_approach():", error);
 	}
 
 	try {
 		distinct.anim.splide_home_testimonials();
 	} catch (error) {
-		console.error(
-			"Error executing distinct.anim.splide_home_testimonials():",
-			error
-		);
+		console.error("Error executing distinct.anim.splide_home_testimonials():", error);
 	}
 
 	try {
