@@ -1866,10 +1866,19 @@ function distinct_anim() {
 					tl_close.play();
 					isOpen = false;
 					header.classList.remove("is-open");
+					document.body.style.overflow = "auto";
+					document.body.style.paddingRight = "0";
+					if (lenis) {
+						lenis.start();
+					}
 				} else {
 					tl_open.play();
 					isOpen = true;
 					header.classList.add("is-open");
+					document.body.style.overflow = "hidden";
+					if (lenis) {
+						lenis.stop();
+					}
 				}
 			}
 
@@ -1942,7 +1951,14 @@ function distinct_anim() {
 					lottieAnimation.goToAndStop(playhead.frame, false);
 
 					header.classList.remove("is-open");
+					document.body.style.overflow = "auto";
+					document.body.style.paddingRight = "0";
 					isOpen = false;
+
+					//restart Lenis
+					if (lenis) {
+						lenis.start();
+					}
 				};
 			});
 		};
