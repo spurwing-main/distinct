@@ -385,58 +385,66 @@ function distinct_anim() {
 					autoplay: true,
 				});
 
+				/* check if play/pause button exists */
 				var toggleButton = document.querySelector(".splide-button");
-				var buttonPause = toggleButton.querySelector(".splide-button_pause");
-				var buttonPlay = toggleButton.querySelector(".splide-button_play");
+				var buttonPause = toggleButton ? toggleButton.querySelector(".splide-button_pause") : null;
+				var buttonPlay = toggleButton ? toggleButton.querySelector(".splide-button_play") : null;
 
-				/* get all videos within slider */
+				/* get all videos within slider if container exists */
 				var videosContainer = document.querySelector(".hero");
-				var videos = videosContainer.querySelectorAll("video");
-				/* get progress bar */
+				var videos = videosContainer ? videosContainer.querySelectorAll("video") : [];
+				
+				/* get progress bar if it exists */
 				var progressBar = document.querySelector(".splide-button_progress-circle");
 
-				/* add pause/play functionality */
-				splide.on("autoplay:play", function () {
-					toggleButton.setAttribute("aria-label", "Pause autoplay");
-					buttonPlay.style.display = "none";
-					buttonPause.style.display = "block";
-				});
+				/* add pause/play functionality only if button exists */
+				if (toggleButton && buttonPause && buttonPlay) {
+					splide.on("autoplay:play", function () {
+						toggleButton.setAttribute("aria-label", "Pause autoplay");
+						buttonPlay.style.display = "none";
+						buttonPause.style.display = "block";
+					});
 
-				splide.on("autoplay:pause", function () {
-					toggleButton.setAttribute("aria-label", "Start autoplay");
-					buttonPause.style.display = "none";
-					buttonPlay.style.display = "block";
-				});
-				splide.on("autoplay:playing", function (rate) {
-					progressBar.style.strokeDashoffset = rate;
-				});
+					splide.on("autoplay:pause", function () {
+						toggleButton.setAttribute("aria-label", "Start autoplay");
+						buttonPause.style.display = "none";
+						buttonPlay.style.display = "block";
+					});
 
-				/* when pause/play button is clicked */
-				toggleButton.addEventListener("click", function () {
-					var Autoplay = splide.Components.Autoplay;
+					/* when pause/play button is clicked */
+					toggleButton.addEventListener("click", function () {
+						var Autoplay = splide.Components.Autoplay;
 
-					/* if splide is currently paused */
-					if (Autoplay.isPaused()) {
-						/* play autoplay */
-						Autoplay.play();
-						/* also get any onscreen videos and play them */
-						videos.forEach((video) => {
-							if (video.paused && video.closest(".splide__slide").classList.contains("is-active")) {
-								video.play();
-							}
-						});
-					} else {
-						Autoplay.pause();
-						videos.forEach((video) => {
-							if (
-								!video.paused &&
-								video.closest(".splide__slide").classList.contains("is-active")
-							) {
-								video.pause();
-							}
-						});
-					}
-				});
+						/* if splide is currently paused */
+						if (Autoplay.isPaused()) {
+							/* play autoplay */
+							Autoplay.play();
+							/* also get any onscreen videos and play them */
+							videos.forEach((video) => {
+								if (video.paused && video.closest(".splide__slide").classList.contains("is-active")) {
+									video.play();
+								}
+							});
+						} else {
+							Autoplay.pause();
+							videos.forEach((video) => {
+								if (
+									!video.paused &&
+									video.closest(".splide__slide").classList.contains("is-active")
+								) {
+									video.pause();
+								}
+							});
+						}
+					});
+				}
+
+				/* add progress bar functionality only if it exists */
+				if (progressBar) {
+					splide.on("autoplay:playing", function (rate) {
+						progressBar.style.strokeDashoffset = rate;
+					});
+				}
 
 				/* gsap scroll trigger to pause when intro overlaps it */
 				ScrollTrigger.create({
